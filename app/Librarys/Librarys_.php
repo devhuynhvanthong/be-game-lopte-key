@@ -17,7 +17,7 @@ class Librarys_{
     }
 
     public static function checkPermission($service){
-        $url = "https://devrulesservice.aigoox.com/api/check_affiliate_service";
+        $url = "https://service-rules.aigoox.com/api/check_affiliate_service";
         $data_ = array(
             SERVICE_CHECK => $service
         );
@@ -53,15 +53,17 @@ class Librarys_{
             AUTHENTICATION => $queryService->value(FIELD_CODE)
         ];
 
-        $bearerToken = Encryptions_::encode($merge_, $keys);
+        $bearerToken = Encryptions_::encode($merge_, $keys[BODY]);
 
         $header = [
             "Content-Type: application/json",
             "Authorization: Bearer " . $bearerToken
         ];
+        
         if ($header_!=null){
             $header = array_merge($header,$header_);
         }
+        
         curl_setopt($init,CURLOPT_HTTPHEADER,$header);
 
         curl_setopt($init, CURLOPT_RETURNTRANSFER, true);
@@ -88,7 +90,7 @@ class Librarys_{
         $data = json_decode($query,true);
         if ($data!=null){
             if ($data[STATUS]==SUCCESS){
-                return $data[DATA];
+                return $data;
             }else{
                 return null;
             }

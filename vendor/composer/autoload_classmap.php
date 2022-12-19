@@ -11,6 +11,8 @@ return array(
     'App\\Exceptions\\Handler' => $baseDir . '/app/Exceptions/Handler.php',
     'App\\Http\\Controllers\\Account\\AccountController' => $baseDir . '/app/Http/Controllers/Account/AccountController.php',
     'App\\Http\\Controllers\\Controller' => $baseDir . '/app/Http/Controllers/Controller.php',
+    'App\\Http\\Controllers\\Datas\\AccountDataController' => $baseDir . '/app/Http/Controllers/Datas/AccountDataController.php',
+    'App\\Http\\Controllers\\Datas\\PaymentsController' => $baseDir . '/app/Http/Controllers/Datas/PaymentsController.php',
     'App\\Http\\Controllers\\Encryption\\EncryptionController' => $baseDir . '/app/Http/Controllers/Encryption/EncryptionController.php',
     'App\\Http\\Kernel' => $baseDir . '/app/Http/Kernel.php',
     'App\\Http\\Middleware\\AuthenticationRequest\\AuthenticationRequest' => $baseDir . '/app/Http/Middleware/AuthenticationRequest/AuthenticationRequest.php',
