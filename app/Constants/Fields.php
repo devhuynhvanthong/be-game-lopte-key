@@ -32,4 +32,6 @@ const FIELD_TOKEN_V2_SERVICE = "token_v2_service";
 const FIELD_LOGO_SERVICE = "logo_service";
 const FIELD_END_POINT_SERVICE = "end_point_service";
 const FIELD_CACHE = "CACHE";
+const FIELD_BROWSER = 'browser';
+const FIELD_IP = 'ip';
 ?>

@@ -514,6 +514,8 @@ class ComposerStaticInitdcb5a18fa5c2b931fb4f42204ef29e71
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
         'App\\Http\\Controllers\\Account\\AccountController' => __DIR__ . '/../..' . '/app/Http/Controllers/Account/AccountController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
+        'App\\Http\\Controllers\\Datas\\AccountDataController' => __DIR__ . '/../..' . '/app/Http/Controllers/Datas/AccountDataController.php',
+        'App\\Http\\Controllers\\Datas\\PaymentsController' => __DIR__ . '/../..' . '/app/Http/Controllers/Datas/PaymentsController.php',
         'App\\Http\\Controllers\\Encryption\\EncryptionController' => __DIR__ . '/../..' . '/app/Http/Controllers/Encryption/EncryptionController.php',
         'App\\Http\\Kernel' => __DIR__ . '/../..' . '/app/Http/Kernel.php',
         'App\\Http\\Middleware\\AuthenticationRequest\\AuthenticationRequest' => __DIR__ . '/../..' . '/app/Http/Middleware/AuthenticationRequest/AuthenticationRequest.php',

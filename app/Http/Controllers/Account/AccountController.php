@@ -66,7 +66,10 @@ class AccountController extends Controller
         $request->validate(
             [
                 FIELD_USERNAME => REQUIRED,
-                FIELD_PASSWORD => REQUIRED
+                FIELD_PASSWORD => REQUIRED,
+                FIELD_BROWSER => REQUIRED,
+                FIELD_IP => REQUIRED,
+                FIELD_DEVICE =>REQUIRED
             ]
         );
         $username = trim($request->input(FIELD_USERNAME));
@@ -94,7 +97,10 @@ class AccountController extends Controller
         if ($url_login!=null && $code_authen!=null){
             $data = [
                 FIELD_USERNAME => $username,
-                FIELD_PASSWORD => $password
+                FIELD_PASSWORD => $password,
+                FIELD_DEVICE => $request->input(FIELD_DEVICE),
+                FIELD_IP => $request->input(FIELD_IP),
+                FIELD_BROWSER => $request->input(FIELD_BROWSER)
             ];
             $url_login .= PATH_LOGIN;
             $data = Librarys_::callApi($url_login,true,$data);
