@@ -33,8 +33,9 @@ Route::middleware('advenced')->group(function (){
     Route::get("get_personal_info",[AccountDataController::class,"getAccountData"]);
     Route::get("get_login_history",[HistoryController::class,"getLoginHistory"]);
     Route::get("get_recent_activity",[HistoryController::class,"getRecentActivity"]);
-    Route::post("check_exprired_access_token",[AccountController::class,"checkExpriredAccessToken"]);
     Route::get("get_payment_method",[PaymentsController::class,"getListPayments"]);
+
+    Route::post("check_exprired_access_token",[AccountController::class,"checkExpriredAccessToken"]);
     Route::post("add_payment_method",[PaymentsController::class,"setListPayments"]);
     Route::post("edit_payment_method",[PaymentsController::class,"editListPayments"]);
     Route::post("delete_payment_method",[PaymentsController::class,"deleteListPayments"]);

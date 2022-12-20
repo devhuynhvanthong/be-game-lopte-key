@@ -45,6 +45,7 @@ class Librarys_{
         if ($keys==null){
             $keys = self::callApiKeys($base_url, self::getMyServicecCode());
         }
+        dd($keys);
         curl_setopt($init,CURLOPT_URL,$url);
         curl_setopt($init,CURLOPT_POST,$isPost);
 
@@ -70,6 +71,7 @@ class Librarys_{
         curl_setopt($init,CURLOPT_POSTFIELDS,json_encode($data));
         $query = curl_exec($init);
         curl_close($init);
+        dd($query);
         return json_decode($query,true);
     }
 

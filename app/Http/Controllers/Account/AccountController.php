@@ -54,12 +54,17 @@ class AccountController extends Controller
                 FIELD_PASSWORD => $password
             ];
             $url_login .= PATH_REGISTER;
-            dd([
-                DATA => $data,
-                'url' => $url_login
-            ]);
+            // dd([
+            //     DATA => $data,
+            //     'url' => $url_login
+            // ]);
             $data = Librarys_::callApi($url_login,true,$data);
-            return $data;
+            dd($data);
+            if($data[STATUS]===SUCCESS){
+
+            }else{
+                return ResultRequest::exportResultFailed($data[MESSAGE]);
+            }
         }
         else{
             return ResultRequest::exportResultInternalServerError();
@@ -108,11 +113,12 @@ class AccountController extends Controller
             ];
             $url_login .= PATH_LOGIN;
             $data = Librarys_::callApi($url_login,true,$data);
+            dd($data);
             $data = [
                 MESSAGE => $data[BODY][MESSAGE],
                 ACCCESS_TOKEN => $data[BODY][DATA][ACCCESS_TOKEN]
             ];
-            return ResultRequest::exportResultSuccess($data,DATA);
+            return ResultRequest::exportResultSuccess($data,DATA,201);
         }
         else{
             return ResultRequest::exportResultInternalServerError();

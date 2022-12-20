@@ -7,24 +7,24 @@ class ResultRequest
     /**
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
      */
-    static function exportResultSuccess($result,$category=VALIDATE)
+    static function exportResultSuccess($result,$category=VALIDATE,$code=200)
     {
         return response()->json([
             STATUS => SUCCESS,
             DATA => $result,
             CATEGORY => $category
-        ],201);
+        ],$code);
     }
 
     /**
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
      */
-    static function exportResultFailed($message){
+    static function exportResultFailed($message,$code=200){
         return response()->json([
             STATUS => FAILED,
             DATA => $message,
             CATEGORY => VALIDATE
-        ],201);
+        ],$code);
     }
 
     /**
@@ -35,7 +35,7 @@ class ResultRequest
             STATUS => FAILED,
             DATA => MESSAGE_AUTHENTICATION,
             CATEGORY => AUTHENTICATION
-        ],201);
+        ],401);
     }
 
     /**
