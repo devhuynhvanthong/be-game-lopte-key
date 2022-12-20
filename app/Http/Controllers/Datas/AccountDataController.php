@@ -5,10 +5,9 @@ namespace App\Http\Controllers\Datas;
 use App\Http\Controllers\Controller;
 use App\Librarys\Librarys_;
 use App\Librarys\ResultRequest;
-use App\Models\Services;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-
+use App\Models\Services;
 class AccountDataController extends Controller
 {
     public function getAccountData(Request $request){
@@ -38,7 +37,7 @@ class AccountDataController extends Controller
             ];
 
             $data = Librarys_::callApi($url_base_account,true,$body);
-            return ResultRequest::exportResultSuccess($data);
+            return ResultRequest::exportResultSuccess($data,DATA);
         }
         else{
             return ResultRequest::exportResultInternalServerError();

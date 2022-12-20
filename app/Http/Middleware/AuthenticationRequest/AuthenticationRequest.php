@@ -45,12 +45,11 @@ class AuthenticationRequest extends Middleware
                         DATA => $accessToken
                     ];
                     $data = Librarys_::callApi($url_base_account,true,$input);
-
                     if ($data){
                         if ($data[STATUS]==true){
                             $input = $request->all();
-                            $accessToken = json_decode(base64_decode($accessToken),true);
-                            $accessToken = $accessToken[ACCESS_TOKEN_COOKIE];
+                            $body = $data[BODY];
+                            $accessToken = $body[ACCESS_TOKEN_COOKIE];
                             $requestAddToken = array_merge($input,[
                                 ACCESS_TOKEN_COOKIE => $accessToken
                             ]);

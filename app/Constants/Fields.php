@@ -21,10 +21,14 @@ const FIELD_DEVICE = "device";
 const FIELD_END_POINT = "endpoint";
 const FIELD_DESCRIPTION = "description";
 const FIELD_MY_SERVICE = "MY_SERVICE";
+const FIELD_SERVICES = 'services';
+const FIELD_BANK = 'bank';
+const FIELD_BRANCH = 'branch';
 /**
  * field other
  */
 
+const FIELD_TIME = 'time';
 const FIELD_NAME_SERVICE = "name_service";
 const FIELD_TOKEN_V1_SERVICE = "token_v1_service";
 const FIELD_CODE_SERVICE = "code_service";

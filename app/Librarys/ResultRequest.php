@@ -7,12 +7,12 @@ class ResultRequest
     /**
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
      */
-    static function exportResultSuccess($result)
+    static function exportResultSuccess($result,$category=VALIDATE)
     {
         return response()->json([
             STATUS => SUCCESS,
             DATA => $result,
-            CATEGORY => VALIDATE
+            CATEGORY => $category
         ],201);
     }
 

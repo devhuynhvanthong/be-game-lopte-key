@@ -9,9 +9,9 @@ use App\Models\Services;
 use App\Librarys\Librarys_;
 use App\Librarys\ResultRequest;
 
-class PaymentsController extends Controller
+class HistoryController extends Controller
 {
-    public function getListPayments(Request $request){
+    public function getLoginHistory(Request $request){
         $url_base_account = null;
         $code_authen = null;
         $cache = json_decode(Cache::get(KEY_CACHE_PRIMARY_KEY_ENCRYPTION),true);
@@ -32,7 +32,7 @@ class PaymentsController extends Controller
         }
 
         if ($url_base_account!=null && $code_authen!=null){
-            $url_base_account .= PATH_GET_PAYMENT_METHOD;
+            $url_base_account .= PATH_GET_LOGIN_HISTORY;
             $body = [
                 DATA => $request->input(ACCESS_TOKEN_COOKIE)
             ];
@@ -44,15 +44,15 @@ class PaymentsController extends Controller
                 foreach($body as $item){
                     $mergeArray = [...$mergeArray,[
                         FIELD_ID => $item[FIELD_ID],
-                        FIELD_CODE => $item[FIELD_CODE],
-                        FIELD_NAME => $item[FIELD_NAME],
-                        FIELD_BANK => $item[FIELD_BANK],
-                        FIELD_BRANCH => $item[FIELD_BRANCH]
+                        FIELD_BROWSER => $item[FIELD_BROWSER],
+                        FIELD_IP => $item[FIELD_IP],
+                        FIELD_TIME_LOGIN => $item[FIELD_TIME_LOGIN],
+                        FIELD_DEVICE => $item[FIELD_DEVICE]
                     ]];
                 }
                 return ResultRequest::exportResultSuccess($mergeArray,DATA);
             }else{
-                return ResultRequest::exportResultSuccess([],DATA);
+                return ResultRequest::exportResultSuccess([]);
             }
         }
         else{
@@ -60,7 +60,7 @@ class PaymentsController extends Controller
         }
     }
 
-    public function setListPayments(Request $request){
+    public function getRecentActivity(Request $request){
         $url_base_account = null;
         $code_authen = null;
         $cache = json_decode(Cache::get(KEY_CACHE_PRIMARY_KEY_ENCRYPTION),true);
@@ -81,7 +81,7 @@ class PaymentsController extends Controller
         }
 
         if ($url_base_account!=null && $code_authen!=null){
-            $url_base_account .= PATH_GET_PAYMENT_METHOD;
+            $url_base_account .= PATH_GET_RECENT_ACTIVITY;
             $body = [
                 DATA => $request->input(ACCESS_TOKEN_COOKIE)
             ];
@@ -92,11 +92,12 @@ class PaymentsController extends Controller
                 $mergeArray = [];
                 foreach($body as $item){
                     $mergeArray = [...$mergeArray,[
-                        FIELD_ID => $item[FIELD_ID],
-                        FIELD_CODE => $item[FIELD_CODE],
                         FIELD_NAME => $item[FIELD_NAME],
-                        FIELD_BANK => $item[FIELD_BANK],
-                        FIELD_BRANCH => $item[FIELD_BRANCH]
+                        FIELD_TIME => $item[FIELD_TIME],
+                        FIELD_BROWSER => $item[FIELD_BROWSER],
+                        FIELD_IP => $item[FIELD_IP],
+                        FIELD_DEVICE => $item[FIELD_DEVICE],
+                        FIELD_SERVICES => $item[FIELD_SERVICES]
                     ]];
                 }
                 return ResultRequest::exportResultSuccess($mergeArray,DATA);
@@ -108,4 +109,5 @@ class PaymentsController extends Controller
             return ResultRequest::exportResultInternalServerError();
         }
     }
+    
 }
