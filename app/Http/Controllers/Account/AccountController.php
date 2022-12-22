@@ -79,6 +79,8 @@ class AccountController extends Controller
                 FIELD_BROWSER => REQUIRED
             ]
         );
+
+
         $username = $request->input(FIELD_USERNAME);
         $password = $request->input(FIELD_PASSWORD);
         $cache = json_decode(Cache::get(KEY_CACHE_PRIMARY_KEY_ENCRYPTION),true);
@@ -101,9 +103,10 @@ class AccountController extends Controller
         }
 
         if ($url_login!=null && $code_authen!=null){
-            $device = explode(" ",$request->userAgent());
-            $device = str_replace("(","",$device);
-            $device = str_replace(")","",$device);
+            $device = "Windows";
+            if(!strpos($request->userAgent(),$device)){
+                $device = "Mobile";
+            }
             $data = [
                 FIELD_USERNAME => $username,
                 FIELD_PASSWORD => $password,
@@ -111,17 +114,21 @@ class AccountController extends Controller
                 FIELD_IP => $request->ip(),
                 FIELD_BROWSER => $request->input(FIELD_BROWSER)
             ];
-
             $data = [
                 DATA => json_encode($data)
             ];
             $url_login .= PATH_LOGIN;
             $data = Librarys_::callApi($url_login,true,$data);
-            $data = [
-                MESSAGE => $data[BODY][MESSAGE],
-                ACCCESS_TOKEN => $data[BODY][DATA][ACCCESS_TOKEN]
-            ];
-            return ResultRequest::exportResultSuccess($data,DATA,201);
+            if($data){
+                $data = [
+                    MESSAGE => $data[BODY][MESSAGE],
+                    ACCCESS_TOKEN => $data[BODY][DATA][ACCCESS_TOKEN]
+                ];
+                return ResultRequest::exportResultSuccess($data,DATA,200);
+            }else{
+                return ResultRequest::exportResultInternalServerError();
+            }
+
         }
         else{
             return ResultRequest::exportResultInternalServerError();
