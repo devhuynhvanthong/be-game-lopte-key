@@ -25,6 +25,7 @@ const VALIDATE = 'validate';
 const MESSAGE = 'message';
 const CATEGORY = 'category';
 const _NULL = 'null';
+const BALANCE = 'balance';
 const ACCCESS_TOKEN = 'accsess_token';
 const ACCESS_TOKEN_COOKIE = 'accsessToken';
 const DATE = 'date';

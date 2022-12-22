@@ -34,7 +34,9 @@ class HistoryController extends Controller
         if ($url_base_account!=null && $code_authen!=null){
             $url_base_account .= PATH_GET_LOGIN_HISTORY;
             $body = [
-                DATA => $request->input(ACCESS_TOKEN_COOKIE)
+                DATA => json_encode([
+                    ACCCESS_TOKEN => $request->input(ACCESS_TOKEN_COOKIE)
+                ])
             ];
 
             $data = Librarys_::callApi($url_base_account,true,$body);
@@ -83,7 +85,9 @@ class HistoryController extends Controller
         if ($url_base_account!=null && $code_authen!=null){
             $url_base_account .= PATH_GET_RECENT_ACTIVITY;
             $body = [
-                DATA => $request->input(ACCESS_TOKEN_COOKIE)
+                DATA => json_encode([
+                    ACCCESS_TOKEN => $request->input(ACCESS_TOKEN_COOKIE)
+                ])
             ];
 
             $data = Librarys_::callApi($url_base_account,true,$body);

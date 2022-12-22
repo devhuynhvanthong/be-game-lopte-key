@@ -5,7 +5,6 @@ use App\Http\Controllers\Datas\HistoryController;
 use App\Http\Controllers\Datas\PaymentsController;
 use App\Http\Controllers\Encryption\EncryptionController;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Account\AccountController;
 use App\Librarys\ResultRequest;
@@ -35,7 +34,6 @@ Route::middleware('advenced')->group(function (){
     Route::get("get_recent_activity",[HistoryController::class,"getRecentActivity"]);
     Route::get("get_payment_method",[PaymentsController::class,"getListPayments"]);
 
-    Route::post("check_exprired_access_token",[AccountController::class,"checkExpriredAccessToken"]);
     Route::post("add_payment_method",[PaymentsController::class,"setListPayments"]);
     Route::post("edit_payment_method",[PaymentsController::class,"editListPayments"]);
     Route::post("delete_payment_method",[PaymentsController::class,"deleteListPayments"]);

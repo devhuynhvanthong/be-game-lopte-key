@@ -15,7 +15,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command(COMMAND_GET_KEY)->daily()->withoutOverlapping();
+        $schedule->command(COMMAND_GET_KEY)->everyMinute()->withoutOverlapping();
     }
 
     /**

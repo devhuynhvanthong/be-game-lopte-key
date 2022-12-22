@@ -7,8 +7,6 @@ const FIELD_ID = 'id';
 const FIELD_USERNAME = 'username';
 const FIELD_TIME_CREATE = "time_create";
 const FIELD_CODE = "code";
-const FIELD_TOKEN_V1 = "token_v1";
-const FIELD_TOKEN_V2 = "token_v2";
 const FIELD_TOKEN = "token";
 const FIELD_ID_ACCOUNT = "id_account";
 const FIELD_TIME_LOGIN = "time_login";
@@ -24,6 +22,18 @@ const FIELD_MY_SERVICE = "MY_SERVICE";
 const FIELD_SERVICES = 'services';
 const FIELD_BANK = 'bank';
 const FIELD_BRANCH = 'branch';
+const FIELD_NUMBER_PHONE = "number_phone";
+const FIELD_EMAIL = "email";
+const FIELD_ADDRESS = "address";
+const FIELD_AVATAR = "avatar";
+const FILED_GENDER = 'gender';
+const FIELD_BIRTH_DAY = 'birth_day';
+const FILED_TOTAL_BALANCE = 'total';
+const FILED_CURRENT_BALANCE = 'current';
+const FILED_AVAILABLE_BALANCE = 'available';
+const FIELD_USED = 'used';
+const FIELD_EARNED = 'earned';
+const FILED_LOCKED_BALANCE = 'clocked';
 /**
  * field other
  */
@@ -38,4 +48,5 @@ const FIELD_END_POINT_SERVICE = "end_point_service";
 const FIELD_CACHE = "CACHE";
 const FIELD_BROWSER = 'browser';
 const FIELD_IP = 'ip';
+const FIELD_INFO = 'info';
 ?>

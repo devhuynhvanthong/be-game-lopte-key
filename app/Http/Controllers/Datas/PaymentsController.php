@@ -34,7 +34,9 @@ class PaymentsController extends Controller
         if ($url_base_account!=null && $code_authen!=null){
             $url_base_account .= PATH_GET_PAYMENT_METHOD;
             $body = [
-                DATA => $request->input(ACCESS_TOKEN_COOKIE)
+                DATA => json_encode([
+                    ACCCESS_TOKEN => $request->input(ACCESS_TOKEN_COOKIE)
+                ])
             ];
 
             $data = Librarys_::callApi($url_base_account,true,$body);
@@ -61,6 +63,11 @@ class PaymentsController extends Controller
     }
 
     public function setListPayments(Request $request){
+        $request->validate([
+            FIELD_CODE => REQUIRED,
+            FIELD_NAME => REQUIRED,
+            FIELD_BANK => REQUIRED
+        ]);
         $url_base_account = null;
         $code_authen = null;
         $cache = json_decode(Cache::get(KEY_CACHE_PRIMARY_KEY_ENCRYPTION),true);
@@ -81,27 +88,41 @@ class PaymentsController extends Controller
         }
 
         if ($url_base_account!=null && $code_authen!=null){
-            $url_base_account .= PATH_GET_PAYMENT_METHOD;
+            $url_base_account .= PATH_ADD_PAYMENT_METHOD;
+            $branch = null;
+            if($request->input(FIELD_BRANCH) !== null){
+                $branch = $request->input(FIELD_BRANCH);
+            }
             $body = [
-                DATA => $request->input(ACCESS_TOKEN_COOKIE)
+                DATA => json_encode([
+                    ACCCESS_TOKEN => $request->input(ACCESS_TOKEN_COOKIE),
+                    FIELD_CODE => $request->input(FIELD_CODE),
+                    FIELD_NAME => $request->input(FIELD_NAME),
+                    FIELD_BANK => $request->input(FIELD_BANK),
+                    FIELD_BRANCH => $branch
+                ])
             ];
 
             $data = Librarys_::callApi($url_base_account,true,$body);
-            if($data!=null){
-                $body = $data[BODY];
-                $mergeArray = [];
-                foreach($body as $item){
-                    $mergeArray = [...$mergeArray,[
-                        FIELD_ID => $item[FIELD_ID],
-                        FIELD_CODE => $item[FIELD_CODE],
-                        FIELD_NAME => $item[FIELD_NAME],
-                        FIELD_BANK => $item[FIELD_BANK],
-                        FIELD_BRANCH => $item[FIELD_BRANCH]
-                    ]];
+            if($data){
+                if($data[STATUS] == SUCCESS){
+                    $body = $data[BODY][DATA];
+                    $mergeArray = [];
+                    foreach($body as $item){
+                        $mergeArray = [...$mergeArray,[
+                            FIELD_ID => $item[FIELD_ID],
+                            FIELD_CODE => $item[FIELD_CODE],
+                            FIELD_NAME => $item[FIELD_NAME],
+                            FIELD_BANK => $item[FIELD_BANK],
+                            FIELD_BRANCH => $item[FIELD_BRANCH]
+                        ]];
+                    }
+                    return ResultRequest::exportResultSuccess($mergeArray,DATA,201);
+                }else{
+                    return ResultRequest::exportResultFailed($data[MESSAGE]);
                 }
-                return ResultRequest::exportResultSuccess($mergeArray,DATA);
             }else{
-                return ResultRequest::exportResultSuccess([],DATA);
+                return ResultRequest::exportResultInternalServerError();
             }
         }
         else{

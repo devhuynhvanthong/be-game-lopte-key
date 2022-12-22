@@ -40,20 +40,21 @@ class AuthenticationRequest extends Middleware
                 }
 
                 if ($url_base_account!=null){
-                    $url_base_account .= PATH_CHECK_EXPRIRED_ACCESS_TOKEN;
+                    $url_base_account .= PATH_CHECK_EXPIRED_ACCESS_TOKEN;
                     $input = [
-                        DATA => $accessToken
+                        DATA => json_encode([
+                            ACCCESS_TOKEN=>$accessToken,
+                        ])
                     ];
                     $data = Librarys_::callApi($url_base_account,true,$input);
                     if ($data){
-                        if ($data[STATUS]==true){
+                        if ($data[STATUS]==SUCCESS){
                             $input = $request->all();
                             $body = $data[BODY];
                             $accessToken = $body[ACCESS_TOKEN_COOKIE];
                             $requestAddToken = array_merge($input,[
                                 ACCESS_TOKEN_COOKIE => $accessToken
                             ]);
-
                             $request->replace($requestAddToken);
                             return $next($request);
                         }else{

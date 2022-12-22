@@ -11,7 +11,7 @@ class ResultRequest
     {
         return response()->json([
             STATUS => SUCCESS,
-            DATA => $result,
+            BODY => $result,
             CATEGORY => $category
         ],$code);
     }
@@ -22,7 +22,7 @@ class ResultRequest
     static function exportResultFailed($message,$code=200){
         return response()->json([
             STATUS => FAILED,
-            DATA => $message,
+            MESSAGE => $message,
             CATEGORY => VALIDATE
         ],$code);
     }

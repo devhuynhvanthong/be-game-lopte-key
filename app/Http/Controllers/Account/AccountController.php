@@ -33,7 +33,7 @@ class AccountController extends Controller
         $url_login = null;
         $code_authen = null;
         if ($cache!=null){
-            foreach ($cache as $cache_){
+            foreach ($cache[FIELD_CACHE] as $cache_){
                 if ($cache_[FIELD_NAME]==VALUE_ACCOUNT_SERVICE_NAME){
                     $url_login = $cache_[FIELD_END_POINT];
                     $code_authen = $cache_[FIELD_CODE];
@@ -53,15 +53,15 @@ class AccountController extends Controller
                 FIELD_USERNAME => $username,
                 FIELD_PASSWORD => $password
             ];
+            $data = [
+                DATA => json_encode($data)
+            ];
             $url_login .= PATH_REGISTER;
-            // dd([
-            //     DATA => $data,
-            //     'url' => $url_login
-            // ]);
-            $data = Librarys_::callApi($url_login,true,$data);
-            dd($data);
-            if($data[STATUS]===SUCCESS){
 
+            $data = Librarys_::callApi($url_login,true,$data);
+
+            if($data[STATUS]===SUCCESS){
+                return ResultRequest::exportResultSuccess($data[BODY],VALIDATE,201);
             }else{
                 return ResultRequest::exportResultFailed($data[MESSAGE]);
             }
@@ -81,13 +81,12 @@ class AccountController extends Controller
                 FIELD_DEVICE =>REQUIRED
             ]
         );
-        $username = trim($request->input(FIELD_USERNAME));
-        $password = trim($request->input(FIELD_PASSWORD));
+        $username = $request->input(FIELD_USERNAME);
+        $password = $request->input(FIELD_PASSWORD);
         $cache = json_decode(Cache::get(KEY_CACHE_PRIMARY_KEY_ENCRYPTION),true);
         $url_login = null;
         $code_authen = null;
         if ($cache!=null){
-
             foreach ($cache[FIELD_CACHE] as $cache_){
                 if ($cache_[FIELD_NAME]==VALUE_ACCOUNT_SERVICE_NAME){
                     $url_login = $cache_[FIELD_END_POINT];
@@ -111,9 +110,12 @@ class AccountController extends Controller
                 FIELD_IP => $request->input(FIELD_IP),
                 FIELD_BROWSER => $request->input(FIELD_BROWSER)
             ];
+
+            $data = [
+                DATA => json_encode($data)
+            ];
             $url_login .= PATH_LOGIN;
             $data = Librarys_::callApi($url_login,true,$data);
-            dd($data);
             $data = [
                 MESSAGE => $data[BODY][MESSAGE],
                 ACCCESS_TOKEN => $data[BODY][DATA][ACCCESS_TOKEN]
@@ -129,8 +131,6 @@ class AccountController extends Controller
         $request->validate([
             FIELD_CODE_SERVICE => REQUIRED
         ]);
-
-
         $code_service = base64_decode($request->input(FIELD_CODE_SERVICE));
         if ($code_service!=null){
             $query = Services::where([FIELD_NAME => $code_service."_product"])->get();
