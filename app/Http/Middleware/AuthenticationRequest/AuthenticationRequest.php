@@ -15,6 +15,7 @@ class AuthenticationRequest extends Middleware
 
     public function handle($request, Closure $next, ...$guards)
     {
+        dd($request->userAgent());
         $tokenReceive = $request->header(AUTHORIZATION);
         if ($tokenReceive!=null){
 

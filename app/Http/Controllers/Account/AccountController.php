@@ -76,9 +76,7 @@ class AccountController extends Controller
             [
                 FIELD_USERNAME => REQUIRED,
                 FIELD_PASSWORD => REQUIRED,
-                FIELD_BROWSER => REQUIRED,
-                FIELD_IP => REQUIRED,
-                FIELD_DEVICE =>REQUIRED
+                FIELD_BROWSER => REQUIRED
             ]
         );
         $username = $request->input(FIELD_USERNAME);
@@ -103,11 +101,14 @@ class AccountController extends Controller
         }
 
         if ($url_login!=null && $code_authen!=null){
+            $device = explode(" ",$request->userAgent());
+            $device = str_replace("(","",$device);
+            $device = str_replace(")","",$device);
             $data = [
                 FIELD_USERNAME => $username,
                 FIELD_PASSWORD => $password,
-                FIELD_DEVICE => $request->input(FIELD_DEVICE),
-                FIELD_IP => $request->input(FIELD_IP),
+                FIELD_DEVICE => $device,
+                FIELD_IP => $request->ip(),
                 FIELD_BROWSER => $request->input(FIELD_BROWSER)
             ];
 
