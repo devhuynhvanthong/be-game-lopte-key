@@ -41,7 +41,7 @@ use function hexdec;
  * these bits to 0, so the maximum range of timestamp drift is 0x00000000
  * to 0xffffffff (counted in 100-nanosecond intervals).
  *
- * @link https://publications.opengroup.org/c311 DCE 1.1: Authentication and Security Services
+ * @link https://publications.opengroup.org/c311 DCE 1.1: Authentication and Security Queues
  * @link https://publications.opengroup.org/c706 DCE 1.1: Remote Procedure Call
  * @link https://pubs.opengroup.org/onlinepubs/9696989899/chap5.htm#tagcjh_08_02_01_01 DCE 1.1: Auth & Sec, §5.2.1.1
  * @link https://pubs.opengroup.org/onlinepubs/9696989899/chap11.htm#tagcjh_14_05_01_01 DCE 1.1: Auth & Sec, §11.5.1.1

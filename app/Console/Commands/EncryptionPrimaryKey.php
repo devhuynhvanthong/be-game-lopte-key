@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use App\Librarys\Librarys_;
 use App\Models\CachePrimaryKeyEncryption;
-use App\Models\Services;
+use App\Models\Queues;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
@@ -35,9 +35,9 @@ class EncryptionPrimaryKey extends Command
     public function handle()
     {
         $array = [];
-        $queryService = Services::get();
+        $queryService = Queues::get();
 
-        $queryMyService = Services::where([FIELD_NAME => FIELD_MY_SERVICE])->get();
+        $queryMyService = Queues::where([FIELD_NAME => FIELD_MY_SERVICE])->get();
         $myservice = $queryMyService->value(FIELD_CODE);
         foreach($queryService as $service){
             if ($service[FIELD_NAME]!=FIELD_MY_SERVICE){

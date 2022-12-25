@@ -6,10 +6,12 @@ const FIELD_PASSWORD = 'password';
 const FIELD_ID = 'id';
 const FIELD_USERNAME = 'username';
 const FIELD_TIME_CREATE = "time_create";
+const FIELD_KEY = "key";
+
 const FIELD_CODE = "code";
 const FIELD_TOKEN = "token";
 const FIELD_ID_ACCOUNT = "id_account";
-const FIELD_TIME_LOGIN = "time_login";
+const FIELD_ID_KEY = "id_key";
 const FIELD_TIME_EXPRIED = "time_expried";
 const FIELD_ID_SERVICE = "id_service_using";
 const FIELD_NAME = "name";
@@ -49,4 +51,5 @@ const FIELD_CACHE = "CACHE";
 const FIELD_BROWSER = 'browser';
 const FIELD_IP = 'ip';
 const FIELD_INFO = 'info';
+const FIELD_GET_ALL = 'get_all';
 ?>

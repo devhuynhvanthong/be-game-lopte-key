@@ -7,7 +7,7 @@ class Payment extends \Faker\Provider\Payment
     private static $vatMap = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'N', 'P', 'Q', 'R', 'S', 'U', 'V', 'W'];
 
     /**
-     * International Bank Account Number (IBAN)
+     * International Bank Keys Number (IBAN)
      *
      * @see http://en.wikipedia.org/wiki/International_Bank_Account_Number
      *

@@ -5,6 +5,7 @@ namespace App\Http\Middleware\AuthenticationRequest;
 use App\Librarys\Encryptions_;
 use App\Librarys\Librarys_;
 use App\Librarys\ResultRequest;
+use App\Models\Queues;
 use App\Models\Services;
 use Closure;
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
@@ -15,15 +16,13 @@ class AuthenticationRequest extends Middleware
 
     public function handle($request, Closure $next, ...$guards)
     {
-        dd($request->userAgent());
         $tokenReceive = $request->header(AUTHORIZATION);
         if ($tokenReceive!=null){
 
             if (substr($tokenReceive,0,7) == BEARER){
                 $tokenAuthen = str_replace(BEARER,"",$request->header(AUTHORIZATION));
 
-                $accessToken = $tokenAuthen; //json_decode(base64_decode($tokenAuthen),true);
-                //$accessToken = $accessToken[ACCESS_TOKEN_COOKIE];
+                $accessToken = $tokenAuthen;
                 $url_base_account = null;
                 $cache = json_decode(Cache::get(KEY_CACHE_PRIMARY_KEY_ENCRYPTION),true);
                 if ($cache!=null){
@@ -47,7 +46,9 @@ class AuthenticationRequest extends Middleware
                             ACCCESS_TOKEN=>$accessToken,
                         ])
                     ];
+                    dd($url_base_account);
                     $data = Librarys_::callApi($url_base_account,true,$input);
+                    dd($data);
                     if ($data){
                         if ($data[STATUS]==SUCCESS){
                             $input = $request->all();

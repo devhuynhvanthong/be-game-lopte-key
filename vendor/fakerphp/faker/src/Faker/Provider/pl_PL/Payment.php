@@ -42,8 +42,8 @@ class Payment extends \Faker\Provider\Payment
         '236' => 'Danske Bank A/S Spółka Akcyjna Oddział w Polsce',
         '237' => 'Skandinaviska Enskilda Banken AB (Spółka Akcyjna) - Oddział w Polsce',
         '239' => 'CAIXABANK, S.A. (SPÓŁKA AKCYJNA) ODDZIAŁ W POLSCE',
-        '241' => 'Elavon Financial Services Designated Activity Company (Spółka z O.O. o Wyznaczonym Przedmiocie Działalności) Oddział w Polsce',
-        '243' => 'BNP Paribas Securities Services Spółka Komandytowo - Akcyjna Oddział w Polsce',
+        '241' => 'Elavon Financial Queues Designated Activity Company (Spółka z O.O. o Wyznaczonym Przedmiocie Działalności) Oddział w Polsce',
+        '243' => 'BNP Paribas Securities Queues Spółka Komandytowo - Akcyjna Oddział w Polsce',
         '247' => 'HAITONG BANK, S.A. Spółka Akcyjna Oddział w Polsce',
         '248' => 'Getin Noble Bank Spółka Akcyjna',
         '249' => 'Alior Bank Spółka Akcyjna',
@@ -87,7 +87,7 @@ class Payment extends \Faker\Provider\Payment
     }
 
     /**
-     * International Bank Account Number (IBAN)
+     * International Bank Keys Number (IBAN)
      *
      * @see http://en.wikipedia.org/wiki/International_Bank_Account_Number
      *

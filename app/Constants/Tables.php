@@ -1,8 +1,8 @@
 <?php
-const TABLE_ACCOUNT = 'account';
-const TABLE_SERVICE_SUPPORT = 'services';
-const TABLE_ENCRYPTION = 'encryption';
-const TABLE_SESSIONS = 'sessions';
+const TABLE_KEYS = 'keys';
+const TABLE_QUEUES = 'queues';
+const TABLE_USED = 'used';
+const TABLE_SERVICES = 'services';
 
 /**
  * VALUE

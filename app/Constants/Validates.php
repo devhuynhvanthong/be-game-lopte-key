@@ -8,5 +8,8 @@ const ADD_DATA_SUCCESS = 'Thêm dữ liệu thành công!';
 const INTERNAL_SERVER = "Internal Server Error";
 const SERVER = "server";
 const FORMAT_LENGHT_PASSOWRD = "Mật khẩu không được ngắn hơn 8 kí tự!";
+const PERMISSION_DEVICE_FAILED = "Thiết bị hiện chưa có quyền nhận key!";
+const KEY_EXPIRED = "Key đã hết thời hạn, xin nhận lại Key mới!";
+const VERIFY_KEY = "Đã xác thực key thành công!";
 
 ?>

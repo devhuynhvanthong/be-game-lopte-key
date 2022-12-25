@@ -9,6 +9,8 @@ const TOKEN_SERVICE_RECEIVE = "dG9rZW5fc2VydmljZQ"; //token_service;
 const CODE = "Y29kZQ"; //code
 const CODE_SERVICE = "Code-Service";
 const REFERER = "referer";
+
+const IP_MD5 = '957b527bcfbad2e80f58d20683931435'; // ip
 /**
  * field thường
  */

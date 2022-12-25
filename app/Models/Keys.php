@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Services extends Model
+class Keys extends Model
 {
     use HasFactory;
-    protected $table = TABLE_SERVICES;
-    protected $fillable = [FIELD_ID, FIELD_NAME, FIELD_CODE,FIELD_END_POINT];
+    protected $table = TABLE_KEYS;
     public $timestamps = false;
+    protected $fillable = [FIELD_ID,FIELD_CODE, FIELD_TIME_CREATE];
+
 }

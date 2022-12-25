@@ -44,7 +44,7 @@ class Encryptions_{
 
     // Lấy password mã hóa
     static public function getEncodePassword($username,$password){
-        $queryAccount = DB::table(TABLE_ACCOUNT)->where([
+        $queryAccount = DB::table(TABLE_KEYS)->where([
             FIELD_USERNAME => $username
         ])->get();
         if($queryAccount){

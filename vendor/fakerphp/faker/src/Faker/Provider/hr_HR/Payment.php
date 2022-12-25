@@ -5,7 +5,7 @@ namespace Faker\Provider\hr_HR;
 class Payment extends \Faker\Provider\Payment
 {
     /**
-     * International Bank Account Number (IBAN)
+     * International Bank Keys Number (IBAN)
      *
      * @see http://en.wikipedia.org/wiki/International_Bank_Account_Number
      *

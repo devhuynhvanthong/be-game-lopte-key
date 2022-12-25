@@ -1,6 +1,7 @@
 <?php
 namespace App\Librarys;
 
+use App\Models\Queues;
 use App\Models\Services;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -10,6 +11,14 @@ use function PHPUnit\Framework\returnArgument;
 class Librarys_{
     public static function getDateTime(){
         return date(FORMAT_DATE_TIME, time());
+    }
+
+    public static function getCode(){
+        return sha1(self::getDateTime());
+    }
+
+    public static function createDateTime($time){
+        return date(FORMAT_DATE_TIME, $time);
     }
 
     public static function getDate(){
@@ -30,7 +39,7 @@ class Librarys_{
         $queryService = Services::where([
             FIELD_END_POINT =>$base_url
         ])->get();
-
+        $myservice = self::getMyServicecCode();
         $keys = null;
         $cache = json_decode(Cache::get(KEY_CACHE_PRIMARY_KEY_ENCRYPTION),true);
         if ($cache!=null){
@@ -43,33 +52,33 @@ class Librarys_{
             }
         }
         if ($keys==null){
-            $keys = self::callApiKeys($base_url, self::getMyServicecCode());
+            $keys = self::callApiKeys($base_url, $myservice);
         }
         curl_setopt($init,CURLOPT_URL,$url);
         curl_setopt($init,CURLOPT_POST,$isPost);
 
         $merge_ = [
-            FIELD_CODE_SERVICE => self::getMyServicecCode(),
+            FIELD_CODE_SERVICE => $myservice,
             AUTHENTICATION => $queryService->value(FIELD_CODE)
         ];
-
         $bearerToken = Encryptions_::encode($merge_, $keys[BODY]);
 
         $header = [
             "Content-Type: application/json",
             "Authorization: Bearer " . $bearerToken
         ];
-        
+
         if ($header_!=null){
             $header = array_merge($header,$header_);
         }
-        
+
         curl_setopt($init,CURLOPT_HTTPHEADER,$header);
 
         curl_setopt($init, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($init,CURLOPT_POSTFIELDS,json_encode($data));
         $query = curl_exec($init);
         curl_close($init);
+
         return json_decode($query,true);
     }
 
@@ -78,13 +87,15 @@ class Librarys_{
         $init = curl_init();
         $key_service = CODE_SERVICE;
         $header = [
-            "Content-Type: application/json",
-            $key_service.": ".$code_service
+            "Content-Type: application/json"
         ];
         curl_setopt($init,CURLOPT_URL,$url_);
         curl_setopt($init,CURLOPT_POST,true);
         curl_setopt($init, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($init,CURLOPT_HTTPHEADER,$header);
+        curl_setopt($init,CURLOPT_POSTFIELDS,json_encode([
+            CODE_SERVICE => $code_service
+        ]));
         $query = curl_exec($init);
         curl_close($init);
         $data = json_decode($query,true);
@@ -125,12 +136,12 @@ class Librarys_{
     //        }
     //    }else{
     //        if ($url!=null){
-    //            $queryService = Services::where([
+    //            $queryService = Queues::where([
     //                FIELD_END_POINT =>$url
     //            ])->get();
     //            return $queryService->value(FIELD_CODE);
     //        }else{
-    //            $queryService = Services::where([
+    //            $queryService = Queues::where([
     //                FIELD_NAME =>$name
     //            ])->get();
     //            return $queryService->value(FIELD_CODE);
