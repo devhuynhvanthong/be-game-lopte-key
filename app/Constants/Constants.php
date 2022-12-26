@@ -35,7 +35,7 @@ const SERVICE_CHECK = "service_check";
 const SIG_VERI_FAILED = "Signature verification failed";
 const SPLIT_CURL = "upgrade-insecure-requests";
 const KEY_ACCESS_TOKEN = "9a6de362cd27ea135e616473fb650b9a";
-
+const PAGE_SIZE_DEFAULT = 10;
 /**
  * Service
  */

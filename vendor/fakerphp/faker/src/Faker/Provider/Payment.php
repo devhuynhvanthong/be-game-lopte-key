@@ -228,7 +228,7 @@ class Payment extends Base
     }
 
     /**
-     * International Bank Keys Number (IBAN)
+     * International Bank Account Number (IBAN)
      *
      * @see http://en.wikipedia.org/wiki/International_Bank_Account_Number
      *

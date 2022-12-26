@@ -5,7 +5,7 @@ namespace Faker\Provider\ar_EG;
 class Payment extends \Faker\Provider\Payment
 {
     /**
-     * International Bank Keys Number (IBAN)
+     * International Bank Account Number (IBAN)
      *
      * @see https://www.upiqrcode.com/iban-generator/eg/egypt
      */

@@ -46,9 +46,7 @@ class AuthenticationRequest extends Middleware
                             ACCCESS_TOKEN=>$accessToken,
                         ])
                     ];
-                    dd($url_base_account);
                     $data = Librarys_::callApi($url_base_account,true,$input);
-                    dd($data);
                     if ($data){
                         if ($data[STATUS]==SUCCESS){
                             $input = $request->all();

@@ -439,7 +439,7 @@ class Company extends \Faker\Provider\Company
         'Secrétaire juridique',
         'Semencier',
         'Sertisseur',
-        'Queues funéraires',
+        'Services funéraires',
         'Solier-moquettiste',
         'Sommelier',
         'Sophrologue',

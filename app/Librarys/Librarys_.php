@@ -71,21 +71,18 @@ class Librarys_{
         if ($header_!=null){
             $header = array_merge($header,$header_);
         }
-
         curl_setopt($init,CURLOPT_HTTPHEADER,$header);
 
         curl_setopt($init, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($init,CURLOPT_POSTFIELDS,json_encode($data));
         $query = curl_exec($init);
         curl_close($init);
-
         return json_decode($query,true);
     }
 
     public static function callApiKeys($url,$code_service){
         $url_ = $url."/api/primary_key_encryption";
         $init = curl_init();
-        $key_service = CODE_SERVICE;
         $header = [
             "Content-Type: application/json"
         ];

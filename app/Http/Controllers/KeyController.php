@@ -17,14 +17,25 @@ class KeyController extends Controller
 {
     public function getKeyByVerify(Request $request){
         $request->validate([
-            FIELD_IP => REQUIRED
+            FIELD_IP => REQUIRED,
+            FIELD_CODE => REQUIRED
         ]);
         $ip = $request->input(FIELD_IP);
+        $code = $request->input(FIELD_CODE);
         $time = Carbon::parse(Librarys_::getDateTime());
-        $queryQueues = Queues::with('key:id,code')
-        ->where([
-            FIELD_IP => $ip
-        ])->get();
+        $checkCode = Keys::where([
+            'alias_code' => $code
+        ])->get()->first();
+        if ($checkCode){
+            $queryQueues = Queues::with('key:id,code')
+                 ->where([
+                     FIELD_IP => $ip,
+                     FIELD_ID_KEY => $checkCode[FIELD_ID]
+                 ])->get();
+        }else{
+            return ResultRequest::exportResultFailed(KEY_EXPIRED);
+        }
+
         if($queryQueues){
             if($queryQueues->count()>0){
                 $queryQueues = $queryQueues->first();
@@ -74,7 +85,7 @@ class KeyController extends Controller
         $ip = $request->input(FIELD_IP);
         $queryQueues = Queues::with('key:id,code')
             ->where([
-                FIELD_IP => $ip
+                FIELD_IP => $ip,
             ])->get();
         if ($queryQueues){
             if($queryQueues->count()>0){
@@ -122,12 +133,167 @@ class KeyController extends Controller
             return ResultRequest::exportResultInternalServerError();
         }
     }
+
     public function getKeys(Request $request){
         $request->validate([
             'page_offet' => REQUIRED
         ]);
         $page_offet = $request->input('page_offet');
         $checkInt = filter_var($page_offet, FILTER_VALIDATE_INT);
-        dd($checkInt);
+        if(!$checkInt){
+            return ResultRequest::exportResultFailed(VALUE_INVLID,401);
+        }else{
+            if ($checkInt<=0){
+                return ResultRequest::exportResultFailed(VALUE_INVLID,401);
+            }
+        }
+        $queryKeys = Keys::get();
+        if ($queryKeys){
+            $totalRecord = $queryKeys->count();
+            $totalPage = $totalRecord / PAGE_SIZE_DEFAULT;
+            if ($totalRecord % PAGE_SIZE_DEFAULT > 0){
+                $totalPage++;
+            }
+            if ($checkInt > $totalPage){
+                return ResultRequest::exportResultSuccess([]);
+            }else{
+                $p = ($checkInt-1)*10;
+                $max = $p + 9;
+                if ($max > $totalRecord){
+                    $max = $totalRecord - 1;
+                }
+                $merge = [];
+                for ($i=$p; $i <= $max; $i++){
+                    $merge = [...$merge,$queryKeys[$i]];
+                }
+                $data = [
+                    'total_page' => $totalPage,
+                    DATA => $merge
+                ];
+                return ResultRequest::exportResultSuccess($data,DATA);
+            }
+        }else{
+            return ResultRequest::exportResultInternalServerError();
+        }
+    }
+
+    public function getKeysQueues(Request $request){
+        $request->validate([
+            'page_offet' => REQUIRED
+        ]);
+        $page_offet = $request->input('page_offet');
+        $checkInt = filter_var($page_offet, FILTER_VALIDATE_INT);
+        if(!$checkInt){
+            return ResultRequest::exportResultFailed(VALUE_INVLID,401);
+        }else{
+            if ($checkInt<=0){
+                return ResultRequest::exportResultFailed(VALUE_INVLID,401);
+            }
+        }
+        $queryKeys = Queues::with('key:id,code,time_create')->get();
+        if ($queryKeys){
+            $totalRecord = $queryKeys->count();
+            $totalPage = $totalRecord / PAGE_SIZE_DEFAULT;
+            if ($totalRecord % PAGE_SIZE_DEFAULT > 0){
+                $totalPage++;
+            }
+            if ($checkInt > $totalPage){
+                return ResultRequest::exportResultSuccess([]);
+            }else{
+                $p = ($checkInt-1)*10;
+                $max = $p + 9;
+                if ($max > $totalRecord){
+                    $max = $totalRecord - 1;
+                }
+                $merge = [];
+                for ($i=$p; $i <= $max; $i++){
+                    $merge = [...$merge,[
+                        FIELD_ID => $queryKeys[$i][FIELD_ID],
+                        FIELD_IP => $queryKeys[$i][FIELD_IP],
+                        'time_queues' => $queryKeys[$i][FIELD_TIME_CREATE],
+                        FIELD_CODE => $queryKeys[$i][FIELD_KEY][FIELD_CODE],
+                        FIELD_TIME_CREATE => $queryKeys[$i][FIELD_KEY][FIELD_TIME_CREATE]
+                    ]];
+                }
+                $data = [
+                    'total_page' => $totalPage,
+                    DATA => $merge
+                ];
+                return ResultRequest::exportResultSuccess($data,DATA);
+            }
+        }else{
+            return ResultRequest::exportResultInternalServerError();
+        }
+    }
+
+    public function getKeysUsed(Request $request){
+        $request->validate([
+            'page_offet' => REQUIRED
+        ]);
+        $page_offet = $request->input('page_offet');
+        $checkInt = filter_var($page_offet, FILTER_VALIDATE_INT);
+        if(!$checkInt){
+            return ResultRequest::exportResultFailed(VALUE_INVLID,401);
+        }else{
+            if ($checkInt<=0){
+                return ResultRequest::exportResultFailed(VALUE_INVLID,401);
+            }
+        }
+        $queryKeys = Used::get();
+        if ($queryKeys){
+            $totalRecord = $queryKeys->count();
+            $totalPage = $totalRecord / PAGE_SIZE_DEFAULT;
+            if ($totalRecord % PAGE_SIZE_DEFAULT > 0){
+                $totalPage++;
+            }
+            if ($checkInt > $totalPage){
+                return ResultRequest::exportResultSuccess([]);
+            }else{
+                $p = ($checkInt-1)*10;
+                $max = $p + 9;
+                if ($max > $totalRecord){
+                    $max = $totalRecord - 1;
+                }
+                $merge = [];
+                for ($i=$p; $i <= $max; $i++){
+                    $merge = [...$merge,[
+                        FIELD_ID => $queryKeys[$i][FIELD_ID],
+                        FIELD_IP => $queryKeys[$i][FIELD_IP],
+                        FIELD_CODE => $queryKeys[$i][FIELD_CODE],
+                        FIELD_TIME_CREATE => $queryKeys[$i][FIELD_TIME]
+                    ]];
+                }
+                $data = [
+                    'total_page' => $totalPage,
+                    DATA => $merge
+                ];
+                return ResultRequest::exportResultSuccess($data,DATA);
+            }
+        }else{
+            return ResultRequest::exportResultInternalServerError();
+        }
+    }
+
+    public function removeKey(Request $request){
+        $request->validate([
+            'id_key' => REQUIRED
+        ]);
+        $page_offet = $request->input('id_key');
+        $checkInt = filter_var($page_offet, FILTER_VALIDATE_INT);
+        if(!$checkInt){
+            return ResultRequest::exportResultFailed(VALUE_INVLID,401);
+        }else{
+            if ($checkInt<=0){
+                return ResultRequest::exportResultFailed(VALUE_INVLID,401);
+            }
+        }
+        $queryDelete = Keys::where([
+            FIELD_ID => $checkInt
+        ])->delete();
+        if ($queryDelete){
+            return ResultRequest::exportResultSuccess(DELETE_DATA_SUCCESS);
+        }else{
+            return ResultRequest::exportResultFailed(DELETE_DATA_FAILED);
+        }
     }
 }

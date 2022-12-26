@@ -11,6 +11,7 @@ class Queues extends Model
     protected $table = TABLE_QUEUES;
     protected $fillable = [FIELD_ID, FIELD_IP, FIELD_ID_KEY,FIELD_TIME_CREATE];
     public $timestamps = false;
+
     public function key(){
         return $this->belongsTo(Keys::class,FIELD_ID_KEY,FIELD_ID);
     }
