@@ -87,6 +87,7 @@ class KeyController extends Controller
             ->where([
                 FIELD_IP => $ip,
             ])->get();
+
         if ($queryQueues){
             if($queryQueues->count()>0){
                 $queryUpdateTime = Queues::where([
@@ -102,13 +103,17 @@ class KeyController extends Controller
                     return ResultRequest::exportResultInternalServerError();
                 }
             }else{
+
                 $queryKey = Keys::get();
                 if ($queryKey){
+
                     foreach ($queryKey as $item){
+
                         $queryQueExist = Queues::where([
-                            FIELD_ID_KEY => $item->id
+                            FIELD_ID_KEY => $item
                         ])->get();
                         if($queryQueExist){
+
                             if($queryQueExist->count()<=0){
                                 $queryVerify = Queues::insert([
                                     FIELD_IP => $ip,
@@ -116,12 +121,15 @@ class KeyController extends Controller
                                     FIELD_TIME_CREATE => Librarys_::getDateTime()
                                 ]);
                                 if($queryVerify){
-                                    return ResultRequest::exportResultSuccess(VERIFY_KEY,VALIDATE,201);
+                                    return ResultRequest::exportResultSuccess([
+                                        FIELD_CODE => $item->alias_code
+                                    ],VALIDATE,201);
                                 }else{
                                     return ResultRequest::exportResultInternalServerError();
                                 }
                             }
                         }else{
+
                             return ResultRequest::exportResultInternalServerError();
                         }
                     }
@@ -294,6 +302,37 @@ class KeyController extends Controller
             return ResultRequest::exportResultSuccess(DELETE_DATA_SUCCESS);
         }else{
             return ResultRequest::exportResultFailed(DELETE_DATA_FAILED);
+        }
+    }
+
+    public function addKey(Request $request){
+
+        $request->validate([
+            FIELD_CODE => REQUIRED
+        ]);
+
+        $code = $request->input(FIELD_CODE);
+        if (strlen($code)<=0){
+            return ResultRequest::exportResultFailed("Độ dày key được để trống!");
+        }
+        $queryCheck = Keys::where([FIELD_CODE=>$code])->get();
+        if ($queryCheck){
+            if ($queryCheck->count()>0){
+                return ResultRequest::exportResultFailed("Key đã tồn tại!");
+            }else{
+                $queryInsert = Keys::insert([
+                    FIELD_CODE => $code,
+                    FIELD_TIME_CREATE => Librarys_::getDateTime(),
+                    'alias_code' => sha1(json_encode([FIELD_CODE => $code, FIELD_TIME_CREATE => Librarys_::getDateTime()]))
+                ]);
+                if ($queryInsert){
+                    return ResultRequest::exportResultSuccess(ADD_DATA_SUCCESS);
+                }else{
+                    return ResultRequest::exportResultSuccess(ADD_DATA_FAILED);
+                }
+            }
+        }else{
+            return ResultRequest::exportResultInternalServerError();
         }
     }
 }

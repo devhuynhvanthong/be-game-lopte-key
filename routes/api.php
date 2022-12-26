@@ -29,6 +29,7 @@ Route::middleware("basic")->group(function (){
     Route::post("verify_key",[KeyController::class,"verifyKey"]);
 });
 Route::middleware('advenced')->group(function (){
+    Route::post('add_key',[KeyController::class,'addKey']);
     Route::get('get_all_key',[KeyController::class,'getKeys']);
     Route::get('get_all_key_queues',[KeyController::class,'getKeysQueues']);
     Route::get('get_all_key_useds',[KeyController::class,'getKeysUsed']);
