@@ -14,4 +14,5 @@ const PERMISSION_DEVICE_FAILED = "Thiết bị hiện chưa có quyền nhận k
 const KEY_EXPIRED = "Key đã hết thời hạn, xin nhận lại Key mới!";
 const VERIFY_KEY = "Đã xác thực key thành công!";
 const VALUE_INVLID = "Giá trị đầu vào lỗi!";
+const PERMISSION_INVALID = "Không có quyền truy cập vào tài nguyên này!"
 ?>

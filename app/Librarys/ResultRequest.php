@@ -30,10 +30,10 @@ class ResultRequest
     /**
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
      */
-    static function exportResultAuthention(){
+    static function exportResultAuthention($message = MESSAGE_AUTHENTICATION){
         return response()->json([
             STATUS => FAILED,
-            DATA => MESSAGE_AUTHENTICATION,
+            DATA => $message,
             CATEGORY => AUTHENTICATION
         ],401);
     }

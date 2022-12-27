@@ -98,6 +98,18 @@ class KeyController extends Controller
                 ]);
 
                 if($queryUpdateTime){
+                    $queryVerify = Queues::with('key:id,alias_code')
+                    ->where([
+                        FIELD_ID => $queryQueues->first()[FIELD_ID]
+                    ])->get()->first();
+                    if($queryVerify){
+
+                        return ResultRequest::exportResultSuccess([
+                            FIELD_CODE => $queryVerify->key->alias_code
+                        ],VALIDATE,201);
+                    }else{
+                        return ResultRequest::exportResultInternalServerError();
+                    }
                     return ResultRequest::exportResultSuccess(VERIFY_KEY);
                 }else{
                     return ResultRequest::exportResultInternalServerError();
@@ -143,6 +155,7 @@ class KeyController extends Controller
     }
 
     public function getKeys(Request $request){
+
         $request->validate([
             'page_offet' => REQUIRED
         ]);
@@ -158,7 +171,7 @@ class KeyController extends Controller
         $queryKeys = Keys::get();
         if ($queryKeys){
             $totalRecord = $queryKeys->count();
-            $totalPage = $totalRecord / PAGE_SIZE_DEFAULT;
+            $totalPage = (int)($totalRecord / PAGE_SIZE_DEFAULT);
             if ($totalRecord % PAGE_SIZE_DEFAULT > 0){
                 $totalPage++;
             }
@@ -167,9 +180,10 @@ class KeyController extends Controller
             }else{
                 $p = ($checkInt-1)*10;
                 $max = $p + 9;
-                if ($max > $totalRecord){
+                if ($max >= $totalRecord){
                     $max = $totalRecord - 1;
                 }
+
                 $merge = [];
                 for ($i=$p; $i <= $max; $i++){
                     $merge = [...$merge,$queryKeys[$i]];
@@ -250,7 +264,7 @@ class KeyController extends Controller
         $queryKeys = Used::get();
         if ($queryKeys){
             $totalRecord = $queryKeys->count();
-            $totalPage = $totalRecord / PAGE_SIZE_DEFAULT;
+            $totalPage = (int)($totalRecord / PAGE_SIZE_DEFAULT);
             if ($totalRecord % PAGE_SIZE_DEFAULT > 0){
                 $totalPage++;
             }

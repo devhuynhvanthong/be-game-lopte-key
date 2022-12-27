@@ -46,19 +46,30 @@ class AuthenticationRequest extends Middleware
                             ACCCESS_TOKEN=>$accessToken,
                         ])
                     ];
+
                     $data = Librarys_::callApi($url_base_account,true,$input);
+
                     if ($data){
                         if ($data[STATUS]==SUCCESS){
-                            $input = $request->all();
-                            $body = $data[BODY];
-                            $accessToken = $body[ACCESS_TOKEN_COOKIE];
-                            $requestAddToken = array_merge($input,[
-                                ACCESS_TOKEN_COOKIE => $accessToken
-                            ]);
-                            $request->replace($requestAddToken);
-                            return $next($request);
+                            if ($data[BODY]['group_account']=="MANAGER_SHARED"){
+                                $input = $request->all();
+                                $body = $data[BODY];
+                                $accessToken = $body[ACCESS_TOKEN_COOKIE];
+                                $requestAddToken = array_merge($input,[
+                                    ACCESS_TOKEN_COOKIE => $accessToken
+                                ]);
+                                $request->replace($requestAddToken);
+                                return $next($request);
+                            }else{
+                                return ResultRequest::exportResultFailed(PERMISSION_INVALID,401);
+                            }
+
                         }else{
-                            return ResultRequest::exportResultAuthention();
+                            if ($data[CATEGORY]==AUTHENTICATION){
+                                return ResultRequest::exportResultAuthention($data[MESSAGE]);
+                            }else{
+                                return ResultRequest::exportResultFailed($data[MESSAGE]);
+                            }
                         }
                     }else{
                         return ResultRequest::exportResultInternalServerError();
