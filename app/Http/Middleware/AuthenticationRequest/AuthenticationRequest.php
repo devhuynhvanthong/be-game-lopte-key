@@ -17,6 +17,7 @@ class AuthenticationRequest extends Middleware
     public function handle($request, Closure $next, ...$guards)
     {
         $tokenReceive = $request->header(AUTHORIZATION);
+
         if ($tokenReceive!=null){
 
             if (substr($tokenReceive,0,7) == BEARER){
@@ -59,6 +60,7 @@ class AuthenticationRequest extends Middleware
                                     ACCESS_TOKEN_COOKIE => $accessToken
                                 ]);
                                 $request->replace($requestAddToken);
+
                                 return $next($request);
                             }else{
                                 return ResultRequest::exportResultFailed(PERMISSION_INVALID,401);

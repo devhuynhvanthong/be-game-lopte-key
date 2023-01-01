@@ -324,29 +324,58 @@ class KeyController extends Controller
         $request->validate([
             FIELD_CODE => REQUIRED
         ]);
+        $totalKey = 0;
+        $totalError = 0;
+        $totalProcess = 0;
+        $totalExist = 0;
+        $codeArr = json_decode($request->input(FIELD_CODE));
 
-        $code = $request->input(FIELD_CODE);
-        if (strlen($code)<=0){
-            return ResultRequest::exportResultFailed("Độ dày key được để trống!");
+        if ($codeArr == null){
+            return ResultRequest::exportResultFailed("Định dạng gửi lên bắt buộc mãng (Array)!",400);
         }
-        $queryCheck = Keys::where([FIELD_CODE=>$code])->get();
-        if ($queryCheck){
-            if ($queryCheck->count()>0){
-                return ResultRequest::exportResultFailed("Key đã tồn tại!");
-            }else{
-                $queryInsert = Keys::insert([
-                    FIELD_CODE => $code,
-                    FIELD_TIME_CREATE => Librarys_::getDateTime(),
-                    'alias_code' => sha1(json_encode([FIELD_CODE => $code, FIELD_TIME_CREATE => Librarys_::getDateTime()]))
-                ]);
-                if ($queryInsert){
-                    return ResultRequest::exportResultSuccess(ADD_DATA_SUCCESS);
-                }else{
-                    return ResultRequest::exportResultSuccess(ADD_DATA_FAILED);
-                }
+        $totalKey = count($codeArr);
+        $arrayData = array();
+        foreach ($codeArr as $code){
+            $totalProcess++;
+            if (strlen($code)<=0){
+                $totalError++;
+                continue;
             }
-        }else{
-            return ResultRequest::exportResultInternalServerError();
+            $queryCheck = Keys::where([FIELD_CODE=>$code])->get();
+            if ($queryCheck){
+                if ($queryCheck->count()>0){
+                   $totalExist++;
+                }else{
+                    array_push($arrayData,[
+                        FIELD_CODE => $code,
+                        FIELD_TIME_CREATE => Librarys_::getDateTime(),
+                        'alias_code' => sha1(json_encode([FIELD_CODE => $code, FIELD_TIME_CREATE => Librarys_::getDateTime()]))
+                    ]);
+                }
+            }else{
+                $totalError++;
+            }
         }
+        $queryInsert = Keys::insert(
+            $arrayData
+        );
+
+        if ($queryInsert){
+            return ResultRequest::exportResultSuccess([
+                MESSAGE => ADD_DATA_SUCCESS,
+                DATA => [
+                    "total_key" => $totalKey,
+                    "total_success" => $totalProcess - $totalExist - $totalError,
+                    "total_processed" => $totalProcess,
+                    "total_error" => [
+                        "total_exist" => $totalExist,
+                        "total_error" => $totalError
+                    ]
+                ]
+            ],DATA,201);
+        }else{
+            return ResultRequest::exportResultSuccess(ADD_DATA_FAILED);
+        }
+
     }
 }
