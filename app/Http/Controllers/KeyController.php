@@ -109,7 +109,7 @@ class KeyController extends Controller
         }
 
         if ($queryCheckUsed->count()>0){
-            return ResultRequest::exportResultFailed("Keys are over for today!");
+            return ResultRequest::exportResultFailed(KEY_OUT_TO_DAY);
         }
         $queryQueues = Queues::with('key:id,code')
                              ->where([

@@ -21,4 +21,5 @@ const PERMISSION_INVALID = "Không có quyền truy cập vào tài nguyên này
 const FIELD_EMPTY = "Field không được trống!";
 const FIELD_INVALID = "Thông tin đầu vào không chính xác!";
 const OUT_OF_KEY = "Keys are out!";
+const KEY_OUT_TO_DAY = "Keys are over for today!";
 ?>

@@ -10,6 +10,7 @@ use App\Models\Queues;
 use App\Models\Used;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CategoryController extends Controller
 {
@@ -67,7 +68,10 @@ class CategoryController extends Controller
                 for ($i=$p; $i <= $max; $i++){
                     $merge = [...$merge,[
                         FIELD_CODE => $category[$i]->code,
-                        FIELD_NAME => $category[$i]->name
+                        FIELD_NAME => $category[$i]->name,
+                        'total_key' => Keys::where([
+                            FIELD_ID_CATEGORY => $category[$i]->id
+                        ])->get()->count()
                     ]];
                 }
                 $data = [

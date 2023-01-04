@@ -52,7 +52,10 @@ class AuthenticationRequest extends Middleware
 
                     if ($data){
                         if ($data[STATUS]==SUCCESS){
-                            if ($data[BODY]['group_account']=="MANAGER_SHARED"){
+                            if ($data[BODY]['group_account']=="MANAGER_SHARED" ||
+                                $data[BODY]['group_account']=="OWNER" ||
+                                $data[BODY]['group_account']=="MANAGER"
+                            ){
                                 $input = $request->all();
                                 $body = $data[BODY];
                                 $accessToken = $body[ACCESS_TOKEN_COOKIE];
@@ -74,7 +77,7 @@ class AuthenticationRequest extends Middleware
                             }
                         }
                     }else{
-                        return ResultRequest::exportResultInternalServerError();
+                        return ResultRequest::exportResultAuthention();
                     }
                 }
                 else{
