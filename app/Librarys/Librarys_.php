@@ -5,12 +5,19 @@ use App\Models\Queues;
 use App\Models\Services;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use function PHPUnit\Framework\returnArgument;
 
 class Librarys_{
     public static function getDateTime(){
         return date(FORMAT_DATE_TIME, time());
+    }
+
+    public static function getDateTimeStartDay(){
+        $date = self::getDate()." 00:00:01";
+        return $date;
+//        return date(FORMAT_DATE_TIME, time());
     }
 
     public static function getCode(){

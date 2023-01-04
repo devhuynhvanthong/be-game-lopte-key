@@ -102,6 +102,15 @@ class KeyController extends Controller
         }
         $network = $request->ip();
         $ip = $mac.".".$network;
+        $queryCheckUsed = Used::where('time','LIKE',Librarys_::getDate().' %')
+            ->where('ip','LIKE','%.'.$network)->get();
+        if (!$queryCheckUsed){
+            return ResultRequest::exportResultInternalServerError();
+        }
+
+        if ($queryCheckUsed->count()>0){
+            return ResultRequest::exportResultFailed("Keys are over for today!");
+        }
         $queryQueues = Queues::with('key:id,code')
                              ->where([
                                  FIELD_IP => $ip,
