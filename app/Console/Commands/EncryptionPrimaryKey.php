@@ -67,6 +67,7 @@ class EncryptionPrimaryKey extends Command
                 FIELD_CACHE => $array
             ]));
             Log::info("Write Cache Succes",$array);
+            Queues::truncate();
             return Command::SUCCESS;
         }else{
             Log::info("Write Cache Failed failed");

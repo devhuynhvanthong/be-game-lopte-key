@@ -6,6 +6,8 @@ const FIELD_PASSWORD = 'password';
 const FIELD_ID = 'id';
 const FIELD_USERNAME = 'username';
 const FIELD_TIME_CREATE = "time_create";
+const FIELD_ID_CATEGORY = 'id_category';
+const FIELD_CATEGORY = 'category';
 const FIELD_KEY = "key";
 
 const FIELD_CODE = "code";
@@ -15,6 +17,7 @@ const FIELD_ID_KEY = "id_key";
 const FIELD_TIME_EXPRIED = "time_expried";
 const FIELD_ID_SERVICE = "id_service_using";
 const FIELD_NAME = "name";
+const FIELD_VALUE = "value";
 const FIELD_LOGO = "logo";
 const FIELD_TIME_REQUEST = "time_request";
 const FIELD_DEVICE = "device";
