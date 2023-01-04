@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Librarys\Librarys_;
 use App\Librarys\ResultRequest;
+use App\Models\Category;
 use App\Models\Keys;
 use App\Models\Queues;
 use App\Models\Used;
@@ -17,10 +18,18 @@ class KeyController extends Controller
 {
     public function getKeyByVerify(Request $request){
         $request->validate([
-            FIELD_IP => REQUIRED,
-            FIELD_CODE => REQUIRED
+            FIELD_CODE => REQUIRED,
+            FIELD_INFO => REQUIRED
         ]);
-        $ip = $request->input(FIELD_IP);
+        $mac = $request->input(FIELD_INFO);
+        if (strlen($mac)<15){
+            return ResultRequest::exportResultAuthention();
+        }
+        if($mac[1]!='a' || $mac[3]!='i' || $mac[5]!='g' || $mac[7]!='o' || $mac[9]!='o' || $mac[11]!='x'){
+            return ResultRequest::exportResultAuthention();
+        }
+        $network = $request->ip();
+        $ip = $mac.".".$network;
         $code = $request->input(FIELD_CODE);
         $time = Carbon::parse(Librarys_::getDateTime());
         $checkCode = Keys::where([
@@ -28,10 +37,10 @@ class KeyController extends Controller
         ])->get()->first();
         if ($checkCode){
             $queryQueues = Queues::with('key:id,code')
-                 ->where([
-                     FIELD_IP => $ip,
-                     FIELD_ID_KEY => $checkCode[FIELD_ID]
-                 ])->get();
+                                 ->where([
+                                     FIELD_IP => $ip,
+                                     FIELD_ID_KEY => $checkCode[FIELD_ID]
+                                 ])->get();
         }else{
             return ResultRequest::exportResultFailed(KEY_EXPIRED);
         }
@@ -44,7 +53,7 @@ class KeyController extends Controller
                     $queryInsertKey = Queues::where([
                         FIELD_ID => $queryQueues[FIELD_ID]
                     ])
-                    ->delete();
+                                            ->delete();
                     if($queryInsertKey){
                         return ResultRequest::exportResultFailed(KEY_EXPIRED);
                     }else{
@@ -80,52 +89,68 @@ class KeyController extends Controller
     }
     public function verifyKey(Request $request){
         $request->validate([
-            FIELD_IP => REQUIRED
+            FIELD_INFO => REQUIRED,
+            FIELD_CATEGORY => REQUIRED
         ]);
-        $ip = $request->input(FIELD_IP);
+        $mac = $request->input(FIELD_INFO);
+        $category = $request->input(FIELD_CATEGORY);
+        if (strlen($mac)<15){
+            return ResultRequest::exportResultAuthention();
+        }
+        if($mac[1]!='a' || $mac[3]!='i' || $mac[5]!='g' || $mac[7]!='o' || $mac[9]!='o' || $mac[11]!='x'){
+            return ResultRequest::exportResultAuthention();
+        }
+        $network = $request->ip();
+        $ip = $mac.".".$network;
         $queryQueues = Queues::with('key:id,code')
-            ->where([
-                FIELD_IP => $ip,
-            ])->get();
+                             ->where([
+                                 FIELD_IP => $ip,
+                             ])->get();
 
         if ($queryQueues){
             if($queryQueues->count()>0){
                 $queryUpdateTime = Queues::where([
-                    FIELD_ID => $queryQueues->first()[FIELD_ID]
+                    FIELD_ID => $queryQueues->value(FIELD_ID)
                 ])
-                ->update([
-                    FIELD_TIME_CREATE =>Librarys_::getDateTime()
-                ]);
+                                         ->update([
+                                             FIELD_TIME_CREATE =>Librarys_::getDateTime()
+                                         ]);
 
                 if($queryUpdateTime){
                     $queryVerify = Queues::with('key:id,alias_code')
-                    ->where([
-                        FIELD_ID => $queryQueues->first()[FIELD_ID]
-                    ])->get()->first();
+                                         ->where([
+                                             FIELD_ID => $queryQueues->first()[FIELD_ID]
+                                         ])->get()->first();
                     if($queryVerify){
-
                         return ResultRequest::exportResultSuccess([
                             FIELD_CODE => $queryVerify->key->alias_code
                         ],VALIDATE,201);
                     }else{
-                        return ResultRequest::exportResultInternalServerError();
+                        return ResultRequest::exportResultFailed(VERIFY_KEY_FAILD);
                     }
-                    return ResultRequest::exportResultSuccess(VERIFY_KEY);
+
                 }else{
                     return ResultRequest::exportResultInternalServerError();
                 }
             }else{
-
-                $queryKey = Keys::get();
+                $queryCategory = Category::where([
+                    FIELD_CODE => $category
+                ])->get();
+                if (!$queryCategory){
+                    return ResultRequest::exportResultInternalServerError();
+                }
+                if ($queryCategory->count()<=0){
+                    return ResultRequest::exportResultFailed("The game doesn't exist");
+                }
+                $queryKey = Keys::where([
+                    FIELD_ID_CATEGORY => $queryCategory->value(FIELD_ID)
+                ])->get();
                 if ($queryKey){
-
                     foreach ($queryKey as $item){
-
                         $queryQueExist = Queues::where([
-                            FIELD_ID_KEY => $item
+                            FIELD_ID_KEY => $item->id
                         ])->get();
                         if($queryQueExist){
-
                             if($queryQueExist->count()<=0){
                                 $queryVerify = Queues::insert([
                                     FIELD_IP => $ip,
@@ -137,14 +162,14 @@ class KeyController extends Controller
                                         FIELD_CODE => $item->alias_code
                                     ],VALIDATE,201);
                                 }else{
-                                    return ResultRequest::exportResultInternalServerError();
+                                    return ResultRequest::exportResultFailed(VERIFY_KEY_FAILD);
                                 }
                             }
                         }else{
-
                             return ResultRequest::exportResultInternalServerError();
                         }
                     }
+                    return ResultRequest::exportResultFailed(OUT_OF_KEY);
                 }else{
                     return ResultRequest::exportResultInternalServerError();
                 }
@@ -168,7 +193,9 @@ class KeyController extends Controller
                 return ResultRequest::exportResultFailed(VALUE_INVLID,401);
             }
         }
-        $queryKeys = Keys::get();
+        $queryKeys = Keys::with([
+            'category:id,name'
+        ])->orderByDesc('time_create')->get();
         if ($queryKeys){
             $totalRecord = $queryKeys->count();
             $totalPage = (int)($totalRecord / PAGE_SIZE_DEFAULT);
@@ -186,7 +213,13 @@ class KeyController extends Controller
 
                 $merge = [];
                 for ($i=$p; $i <= $max; $i++){
-                    $merge = [...$merge,$queryKeys[$i]];
+                    $merge = [...$merge,[
+                        'alias_code' => $queryKeys[$i]->alias_code,
+                        FIELD_CODE => $queryKeys[$i]->code,
+                        FIELD_ID => $queryKeys[$i]->id,
+                        FIELD_TIME_CREATE => $queryKeys[$i]->time_create,
+                        'category' => $queryKeys[$i]->category->name
+                    ]];
                 }
                 $data = [
                     'total_page' => $totalPage,
@@ -322,9 +355,10 @@ class KeyController extends Controller
     public function addKey(Request $request){
 
         $request->validate([
-            FIELD_CODE => REQUIRED
+            FIELD_CODE => REQUIRED,
+            FIELD_CATEGORY => REQUIRED
         ]);
-        $totalKey = 0;
+
         $totalError = 0;
         $totalProcess = 0;
         $totalExist = 0;
@@ -333,6 +367,17 @@ class KeyController extends Controller
         if ($codeArr == null){
             return ResultRequest::exportResultFailed("Định dạng gửi lên bắt buộc mãng (Array)!",400);
         }
+        $category = $request->input(FIELD_CATEGORY);
+        if ($category == "" || $category == null){
+            return ResultRequest::exportResultFailed(FIELD_EMPTY);
+        }
+        $queryCategory = Category::where([
+            FIELD_CODE => $category
+        ])->get()->first();
+        if ($queryCategory== null){
+            return ResultRequest::exportResultFailed(FIELD_INVALID);
+        }
+
         $totalKey = count($codeArr);
         $arrayData = array();
         foreach ($codeArr as $code){
@@ -344,12 +389,13 @@ class KeyController extends Controller
             $queryCheck = Keys::where([FIELD_CODE=>$code])->get();
             if ($queryCheck){
                 if ($queryCheck->count()>0){
-                   $totalExist++;
+                    $totalExist++;
                 }else{
                     array_push($arrayData,[
                         FIELD_CODE => $code,
                         FIELD_TIME_CREATE => Librarys_::getDateTime(),
-                        'alias_code' => sha1(json_encode([FIELD_CODE => $code, FIELD_TIME_CREATE => Librarys_::getDateTime()]))
+                        'alias_code' => sha1(json_encode([FIELD_CODE => $code, FIELD_TIME_CREATE => Librarys_::getDateTime()])),
+                        FIELD_ID_CATEGORY => $queryCategory->id
                     ]);
                 }
             }else{
@@ -376,6 +422,6 @@ class KeyController extends Controller
         }else{
             return ResultRequest::exportResultSuccess(ADD_DATA_FAILED);
         }
-
     }
+
 }

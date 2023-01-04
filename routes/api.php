@@ -1,13 +1,9 @@
 <?php
 
-use App\Http\Controllers\Datas\AccountDataController;
-use App\Http\Controllers\Datas\HistoryController;
-use App\Http\Controllers\Datas\PaymentsController;
-use App\Http\Controllers\Encryption\EncryptionController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\KeyController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Account\AccountController;
 use App\Librarys\ResultRequest;
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +23,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::middleware("basic")->group(function (){
     Route::post("get_key",[KeyController::class,"getKeyByVerify"]);
     Route::post("verify_key",[KeyController::class,"verifyKey"]);
+    Route::get('get_categorys',[CategoryController::class,"getCategory"]);
 });
 Route::middleware('advenced')->group(function (){
     Route::post('add_key',[KeyController::class,'addKey']);
@@ -34,6 +31,10 @@ Route::middleware('advenced')->group(function (){
     Route::get('get_all_key_queues',[KeyController::class,'getKeysQueues']);
     Route::get('get_all_key_useds',[KeyController::class,'getKeysUsed']);
     Route::post('remove_key',[KeyController::class,'removeKey']);
+    Route::post('remove_category',[CategoryController::class,'removeCategory']);
+    Route::post('edit_category',[CategoryController::class,'updateCategory']);
+    Route::get('get_all_category',[CategoryController::class,'getAllCategory']);
+    Route::post('add_categogy',[CategoryController::class,'addCategory']);
 });
 
 Route::get('/', function () {
