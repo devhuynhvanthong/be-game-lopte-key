@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ConfigController;
 use App\Http\Controllers\KeyController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -24,6 +25,7 @@ Route::middleware("basic")->group(function (){
     Route::post("get_key",[KeyController::class,"getKeyByVerify"]);
     Route::post("verify_key",[KeyController::class,"verifyKey"]);
     Route::get('get_categorys',[CategoryController::class,"getCategory"]);
+    Route::get('get_config',[ConfigController::class,'getConfig']);
 });
 Route::middleware('advenced')->group(function (){
     Route::post('add_key',[KeyController::class,'addKey']);
@@ -35,6 +37,7 @@ Route::middleware('advenced')->group(function (){
     Route::post('edit_category',[CategoryController::class,'updateCategory']);
     Route::get('get_all_category',[CategoryController::class,'getAllCategory']);
     Route::post('add_categogy',[CategoryController::class,'addCategory']);
+    Route::post('update_config',[ConfigController::class,'updateConfig']);
 });
 
 Route::get('/', function () {

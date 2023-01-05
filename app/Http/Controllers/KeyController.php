@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Librarys\Librarys_;
 use App\Librarys\ResultRequest;
 use App\Models\Category;
+use App\Models\Configs;
 use App\Models\Keys;
 use App\Models\Queues;
 use App\Models\Used;
@@ -108,9 +109,22 @@ class KeyController extends Controller
             return ResultRequest::exportResultInternalServerError();
         }
 
-        if ($queryCheckUsed->count()>0){
-            return ResultRequest::exportResultFailed(KEY_OUT_TO_DAY);
+        $queryConfig = Configs::where([FIELD_CODE => 'visits'])->get()->first();
+        if (!$queryConfig){
+            return ResultRequest::exportResultInternalServerError();
         }
+        switch ($queryConfig->value){
+            case "ONE_KEY_DAY":
+                if ($queryCheckUsed->count()>0){
+                    return ResultRequest::exportResultFailed(KEY_OUT_TO_DAY);
+                }
+                break;
+            case "TWO_KEY_DAY":
+                if ($queryCheckUsed->count()>1){
+                    return ResultRequest::exportResultFailed(KEY_OUT_TO_DAY);
+                }
+        }
+
         $queryQueues = Queues::with('key:id,code')
                              ->where([
                                  FIELD_IP => $ip,

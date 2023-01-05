@@ -19,18 +19,18 @@ class ConfigController extends Controller
         $arr = array();
         if ($queryConfig){
             foreach ($queryConfig as $item){
-                array_push($arr,[
-                   FIELD_CODE => $item->value(FIELD_CODE),
-                   FIELD_NAME => $item->value(FIELD_NAME),
-                   FIELD_VALUE => $item->value(FIELD_VALUE)
-                ]);
+                $arr = [...$arr,[
+                   FIELD_CODE => $item->code,
+                   FIELD_NAME => $item->name,
+                   FIELD_VALUE => $item->value
+                ]];
             }
             return ResultRequest::exportResultSuccess($arr,DATA);
         }else{
             return ResultRequest::exportResultInternalServerError();
         }
     }
-    public function updateCategory(Request $request){
+    public function updateConfig(Request $request){
         $request->validate([
             FIELD_VALUE => REQUIRED,
             FIELD_CODE => REQUIRED

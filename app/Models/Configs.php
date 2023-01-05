@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Configs extends Model
 {
     use HasFactory;
-    protected $table = TABLE_CATEGORY;
+    protected $table = TABLE_CONFIG;
     public $timestamps = false;
     protected $fillable = [FIELD_ID,FIELD_CODE, FIELD_NAME, FIELD_VALUE];
 }
