@@ -6,13 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Librarys\Librarys_;
 use App\Librarys\ResultRequest;
 use App\Models\Category;
+use App\Models\ConfigVisit;
 use App\Models\Configs;
 use App\Models\Keys;
 use App\Models\Queues;
 use App\Models\Used;
 use Carbon\Carbon;
+use DateInterval;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Nette\Utils\DateTime;
 use Termwind\Components\Li;
 
 class KeyController extends Controller
@@ -38,10 +41,10 @@ class KeyController extends Controller
         ])->get()->first();
         if ($checkCode){
             $queryQueues = Queues::with('key:id,code')
-                                 ->where([
-                                     FIELD_IP => $ip,
-                                     FIELD_ID_KEY => $checkCode[FIELD_ID]
-                                 ])->get();
+                ->where([
+                    FIELD_IP => $ip,
+                    FIELD_ID_KEY => $checkCode[FIELD_ID]
+                ])->get();
         }else{
             return ResultRequest::exportResultFailed(KEY_EXPIRED);
         }
@@ -54,7 +57,7 @@ class KeyController extends Controller
                     $queryInsertKey = Queues::where([
                         FIELD_ID => $queryQueues[FIELD_ID]
                     ])
-                                            ->delete();
+                        ->delete();
                     if($queryInsertKey){
                         return ResultRequest::exportResultFailed(KEY_EXPIRED);
                     }else{
@@ -103,47 +106,72 @@ class KeyController extends Controller
         }
         $network = $request->ip();
         $ip = $mac.".".$network;
-        $queryCheckUsed = Used::where('time','LIKE',Librarys_::getDate().' %')
-            ->where('ip','LIKE','%.'.$network)->get();
-        if (!$queryCheckUsed){
+        $queryCategory = Category::where([
+            FIELD_CODE => $category
+        ])->get()->first();
+        if (!$queryCategory){
             return ResultRequest::exportResultInternalServerError();
         }
 
-        $queryConfig = Configs::where([FIELD_CODE => 'visits'])->get()->first();
-        if (!$queryConfig){
+        $queryCheckUsedCategory = ConfigVisit::with(['category_key:id,code'])
+        ->where([
+            FIELD_ID_CATEGORY => $queryCategory->id
+        ])->get();
+        if (!$queryCheckUsedCategory){
             return ResultRequest::exportResultInternalServerError();
         }
-        switch ($queryConfig->value){
-            case "ONE_KEY_DAY":
-                if ($queryCheckUsed->count()>0){
-                    return ResultRequest::exportResultFailed(KEY_OUT_TO_DAY);
-                }
-                break;
-            case "TWO_KEY_DAY":
-                if ($queryCheckUsed->count()>1){
-                    return ResultRequest::exportResultFailed(KEY_OUT_TO_DAY);
-                }
+        if ($queryCheckUsedCategory->count()>0){
+            $queryConfig = Configs::where([FIELD_CODE => 'visits'])->get()->first();
+            if (!$queryConfig){
+                return ResultRequest::exportResultInternalServerError();
+            }
+            if (explode('_',$queryConfig->value)[2] == "HOUR"){
+                $date = new DateTime(Librarys_::getDate());
+                $queryCheckUsed = Used::where('time','>=',$date->sub(new DateInterval('PT2H')))
+                    ->where('ip','LIKE','%.'.$network)->get();
+            }
+            else{
+                $queryCheckUsed = Used::where('time','LIKE',Librarys_::getDate().' %')
+                    ->where('ip','LIKE','%.'.$network)->get();
+            }
+            if (!$queryCheckUsed){
+                return ResultRequest::exportResultInternalServerError();
+            }
+            switch ($queryConfig->value){
+                case "ONE_KEY_HOUR":
+                case "ONE_KEY_DAY":
+                    if ($queryCheckUsed->count()>0){
+                        return ResultRequest::exportResultFailed(KEY_OUT_TO_DAY);
+                    }
+                    break;
+                case "TWO_KEY_HOUR":
+                case "TWO_KEY_DAY":
+                    if ($queryCheckUsed->count()>1){
+                        return ResultRequest::exportResultFailed(KEY_OUT_TO_DAY);
+                    }
+            }
+
         }
 
         $queryQueues = Queues::with('key:id,code')
-                             ->where([
-                                 FIELD_IP => $ip,
-                             ])->get();
+            ->where([
+                FIELD_IP => $ip,
+            ])->get();
 
         if ($queryQueues){
             if($queryQueues->count()>0){
                 $queryUpdateTime = Queues::where([
                     FIELD_ID => $queryQueues->value(FIELD_ID)
                 ])
-                                         ->update([
-                                             FIELD_TIME_CREATE =>Librarys_::getDateTime()
-                                         ]);
+                    ->update([
+                        FIELD_TIME_CREATE =>Librarys_::getDateTime()
+                    ]);
 
                 if($queryUpdateTime){
                     $queryVerify = Queues::with('key:id,alias_code')
-                                         ->where([
-                                             FIELD_ID => $queryQueues->first()[FIELD_ID]
-                                         ])->get()->first();
+                        ->where([
+                            FIELD_ID => $queryQueues->first()[FIELD_ID]
+                        ])->get()->first();
                     if($queryVerify){
                         return ResultRequest::exportResultSuccess([
                             FIELD_CODE => $queryVerify->key->alias_code
@@ -268,7 +296,7 @@ class KeyController extends Controller
                 return ResultRequest::exportResultFailed(VALUE_INVLID,401);
             }
         }
-        $queryKeys = Queues::with('key:id,code,time_create')->get();
+        $queryKeys = Queues::with('key:id,code,time_create')->orderByDesc('time_create')->get();
         if ($queryKeys){
             $totalRecord = $queryKeys->count();
             $totalPage = $totalRecord / PAGE_SIZE_DEFAULT;
@@ -317,7 +345,7 @@ class KeyController extends Controller
                 return ResultRequest::exportResultFailed(VALUE_INVLID,401);
             }
         }
-        $queryKeys = Used::get();
+        $queryKeys = Used::orderByDesc('time')->get();
         if ($queryKeys){
             $totalRecord = $queryKeys->count();
             $totalPage = (int)($totalRecord / PAGE_SIZE_DEFAULT);

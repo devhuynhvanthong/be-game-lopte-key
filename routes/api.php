@@ -38,6 +38,7 @@ Route::middleware('advenced')->group(function (){
     Route::get('get_all_category',[CategoryController::class,'getAllCategory']);
     Route::post('add_categogy',[CategoryController::class,'addCategory']);
     Route::post('update_config',[ConfigController::class,'updateConfig']);
+    Route::get('get_config_visit',[ConfigController::class,'getConfigCategory']);
 });
 
 Route::get('/', function () {

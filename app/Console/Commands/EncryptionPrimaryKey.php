@@ -60,7 +60,7 @@ class EncryptionPrimaryKey extends Command
 
         if ($queryService && $queryMyService){
             if (Cache::has(KEY_CACHE_PRIMARY_KEY_ENCRYPTION)){
-                Cache::forget(KEY_CACHE_PRIMARY_KEY_ENCRYPTION);
+                Cache::flush();
             }
             Cache::put(KEY_CACHE_PRIMARY_KEY_ENCRYPTION,json_encode([
                 FIELD_MY_SERVICE => $myservice,

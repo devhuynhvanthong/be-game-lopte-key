@@ -15,7 +15,8 @@ use Illuminate\Support\Facades\DB;
 class CategoryController extends Controller
 {
     public function getCategory(){
-        $category = Category::get();
+
+        $category = Category::orderByDesc('id')->get();
         $arr = array();
 
         if ($category){
@@ -48,7 +49,7 @@ class CategoryController extends Controller
                 return ResultRequest::exportResultFailed(VALUE_INVLID,401);
             }
         }
-        $category = Category::get();
+        $category = Category::orderByDesc('id')->get();
         if ($category){
             $totalRecord = $category->count();
             $totalPage = (int)($totalRecord / PAGE_SIZE_DEFAULT);
