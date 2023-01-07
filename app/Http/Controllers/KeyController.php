@@ -36,7 +36,8 @@ class KeyController extends Controller
         $ip = $mac.".".$network;
         $code = $request->input(FIELD_CODE);
         $time = Carbon::parse(Librarys_::getDateTime());
-        $checkCode = Keys::where([
+        $checkCode = Keys::with('category:id,code,name')
+        ->where([
             'alias_code' => $code
         ])->get()->first();
         if ($checkCode){
@@ -75,7 +76,8 @@ class KeyController extends Controller
                         $queryInsertUsed = Used::insert([
                             FIELD_CODE => $queryQueues[FIELD_KEY][FIELD_CODE],
                             FIELD_TIME => Librarys_::getDateTime(),
-                            FIELD_IP => $ip
+                            FIELD_IP => $ip,
+                            FIELD_ID_CATEGORY => $checkCode->category->id
                         ]);
                         if($queryInsertUsed){
                             return ResultRequest::exportResultSuccess($data,DATA);
@@ -128,10 +130,16 @@ class KeyController extends Controller
             if (explode('_',$queryConfig->value)[2] == "HOUR"){
                 $date = new DateTime(Librarys_::getDate());
                 $queryCheckUsed = Used::where('time','>=',$date->sub(new DateInterval('PT2H')))
+                    ->where([
+                        FIELD_ID_CATEGORY => $queryCategory->id
+                    ])
                     ->where('ip','LIKE','%.'.$network)->get();
             }
             else{
                 $queryCheckUsed = Used::where('time','LIKE',Librarys_::getDate().' %')
+                    ->where([
+                        FIELD_ID_CATEGORY => $queryCategory->id
+                    ])
                     ->where('ip','LIKE','%.'.$network)->get();
             }
             if (!$queryCheckUsed){
