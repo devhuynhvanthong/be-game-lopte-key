@@ -84,6 +84,6 @@ class Kernel extends HttpKernel
         'throttle' => ThrottleRequests::class,
         'verified' => EnsureEmailIsVerified::class,
         'basic' => MiddlewareBasic::class,
-        'advenced' => AuthenticationRequest::class
+        'advanced' => AuthenticationRequest::class
     ];
 }

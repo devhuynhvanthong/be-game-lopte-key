@@ -15,9 +15,7 @@ class Librarys_{
     }
 
     public static function getDateTimeStartDay(){
-        $date = self::getDate()." 00:00:01";
-        return $date;
-//        return date(FORMAT_DATE_TIME, time());
+        return self::getDate()." 00:00:01";
     }
 
     public static function getCode(){
@@ -32,47 +30,13 @@ class Librarys_{
         return date(FORMAT_DATE, time());
     }
 
-    public static function checkPermission($service){
-        $url = "https://service-rules.aigoox.com/api/check_affiliate_service";
-        $data_ = array(
-            SERVICE_CHECK => $service
-        );
-        return self::callApi($url,true,$data_)[DATA];
-    }
-
     public static function callApi($url,$isPost = true ,$data = [],$header_ = null){
         $init = curl_init();
-        $base_url = explode("/api",$url)[0];
-        $queryService = Services::where([
-            FIELD_END_POINT =>$base_url
-        ])->get();
-        $myservice = self::getMyServicecCode();
-        $keys = null;
-        $cache = json_decode(Cache::get(KEY_CACHE_PRIMARY_KEY_ENCRYPTION),true);
-        if ($cache!=null){
-            $cache = $cache[FIELD_CACHE];
-            foreach ($cache as $cache_){
-                if ($cache_[FIELD_NAME]==$queryService->value(FIELD_NAME)){
-                    $keys = $cache_["key"];
-                    break;
-                }
-            }
-        }
-        if ($keys==null){
-            $keys = self::callApiKeys($base_url, $myservice);
-        }
         curl_setopt($init,CURLOPT_URL,$url);
         curl_setopt($init,CURLOPT_POST,$isPost);
 
-        $merge_ = [
-            FIELD_CODE_SERVICE => $myservice,
-            AUTHENTICATION => $queryService->value(FIELD_CODE)
-        ];
-        $bearerToken = Encryptions_::encode($merge_, $keys[BODY]);
-
         $header = [
             "Content-Type: application/json",
-            "Authorization: Bearer " . $bearerToken
         ];
 
         if ($header_!=null){

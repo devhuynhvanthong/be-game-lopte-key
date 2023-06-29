@@ -38,10 +38,10 @@ class CategoryController extends Controller
 
     public function getAllCategory(Request $request){
         $request->validate([
-            'page_offet' => REQUIRED
+            'page_offset' => REQUIRED
         ]);
-        $page_offet = $request->input('page_offet');
-        $checkInt = filter_var($page_offet, FILTER_VALIDATE_INT);
+        $page_offset = $request->input('page_offset');
+        $checkInt = filter_var($page_offset, FILTER_VALIDATE_INT);
         if(!$checkInt){
             return ResultRequest::exportResultFailed(VALUE_INVLID,401);
         }else{

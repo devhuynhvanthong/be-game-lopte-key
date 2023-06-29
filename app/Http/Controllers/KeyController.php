@@ -239,12 +239,11 @@ class KeyController extends Controller
     }
 
     public function getKeys(Request $request){
-
         $request->validate([
-            'page_offet' => REQUIRED
+            'page_offset' => REQUIRED
         ]);
-        $page_offet = $request->input('page_offet');
-        $checkInt = filter_var($page_offet, FILTER_VALIDATE_INT);
+        $page_offset = $request->input('page_offset');
+        $checkInt = filter_var($page_offset, FILTER_VALIDATE_INT);
         if(!$checkInt){
             return ResultRequest::exportResultFailed(VALUE_INVLID,401);
         }else{
@@ -293,10 +292,10 @@ class KeyController extends Controller
 
     public function getKeysQueues(Request $request){
         $request->validate([
-            'page_offet' => REQUIRED
+            'page_offset' => REQUIRED
         ]);
-        $page_offet = $request->input('page_offet');
-        $checkInt = filter_var($page_offet, FILTER_VALIDATE_INT);
+        $page_offset = $request->input('page_offset');
+        $checkInt = filter_var($page_offset, FILTER_VALIDATE_INT);
         if(!$checkInt){
             return ResultRequest::exportResultFailed(VALUE_INVLID,401);
         }else{
@@ -342,10 +341,10 @@ class KeyController extends Controller
 
     public function getKeysUsed(Request $request){
         $request->validate([
-            'page_offet' => REQUIRED
+            'page_offset' => REQUIRED
         ]);
-        $page_offet = $request->input('page_offet');
-        $checkInt = filter_var($page_offet, FILTER_VALIDATE_INT);
+        $page_offset = $request->input('page_offset');
+        $checkInt = filter_var($page_offset, FILTER_VALIDATE_INT);
         if(!$checkInt){
             return ResultRequest::exportResultFailed(VALUE_INVLID,401);
         }else{
@@ -392,8 +391,8 @@ class KeyController extends Controller
         $request->validate([
             'id_key' => REQUIRED
         ]);
-        $page_offet = $request->input('id_key');
-        $checkInt = filter_var($page_offet, FILTER_VALIDATE_INT);
+        $page_offset = $request->input('id_key');
+        $checkInt = filter_var($page_offset, FILTER_VALIDATE_INT);
         if(!$checkInt){
             return ResultRequest::exportResultFailed(VALUE_INVLID,401);
         }else{

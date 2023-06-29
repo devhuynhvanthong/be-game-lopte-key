@@ -24,71 +24,46 @@ class AuthenticationRequest extends Middleware
                 $tokenAuthen = str_replace(BEARER,"",$request->header(AUTHORIZATION));
 
                 $accessToken = $tokenAuthen;
-                $url_base_account = null;
-                $cache = json_decode(Cache::get(KEY_CACHE_PRIMARY_KEY_ENCRYPTION),true);
-                if ($cache!=null){
-                    foreach ($cache[FIELD_CACHE] as $cache_){
-                        if ($cache_[FIELD_NAME]==VALUE_ACCOUNT_SERVICE_NAME){
-                            $url_base_account = $cache_[FIELD_END_POINT];
-                            break;
-                        }
-                    }
-                }
-
-                if ($url_base_account == null){
-                    $queryLogin = Services::where([FIELD_NAME=>VALUE_ACCOUNT_SERVICE_NAME])->get();
-                    $url_base_account = $queryLogin->value(FIELD_END_POINT);
-                }
-
-                if ($url_base_account!=null){
-                    $url_base_account .= PATH_CHECK_EXPIRED_ACCESS_TOKEN;
-                    $input = [
-                        DATA => json_encode([
-                            ACCCESS_TOKEN=>$accessToken,
-                        ])
-                    ];
-
-                    $data = Librarys_::callApi($url_base_account,true,$input);
-
-                    if ($data){
-                        if ($data[STATUS]==SUCCESS){
-                            if ($data[BODY]['group_account']=="MANAGER_SHARED" ||
-                                $data[BODY]['group_account']=="OWNER" ||
-                                $data[BODY]['group_account']=="MANAGER"
-                            ){
-                                $input = $request->all();
-                                $body = $data[BODY];
-                                $accessToken = $body[ACCESS_TOKEN_COOKIE];
-                                $requestAddToken = array_merge($input,[
-                                    ACCESS_TOKEN_COOKIE => $accessToken
-                                ]);
-                                $request->replace($requestAddToken);
-
-                                return $next($request);
-                            }else{
-                                return ResultRequest::exportResultFailed(PERMISSION_INVALID,401);
-                            }
-
+                $cache = json_decode(Cache::get(KEY_CACHE_SERVICE),true);
+                $cache = array_filter($cache, function ($item) {
+                    return $item[FIELD_NAME] == VALUE_ACCOUNT_PRODUCT;
+                })[0];
+                $url_base_account = Encryptions_::decryptionAESMyData($cache[FIELD_END_POINT]);
+                $url_base_account .= PATH_CHECK_EXPIRED_ACCESS_TOKEN;
+                $data = Librarys_::callApi($url_base_account,true,[],[
+                    "Authorization: Bearer " . $accessToken
+                ]);
+                if ($data){
+                    if ($data[STATUS]==SUCCESS){
+                        if ($data[BODY]['group_account']=="MANAGER_SHARED" ||
+                            $data[BODY]['group_account']=="OWNER" ||
+                            $data[BODY]['group_account']=="MANAGER"
+                        ){
+                            $input = $request->all();
+                            $requestAddToken = array_merge($input,[
+                                ACCESS_TOKEN_COOKIE => $accessToken
+                            ]);
+                            $request->replace($requestAddToken);
+                            return $next($request);
                         }else{
-                            if ($data[CATEGORY]==AUTHENTICATION){
-                                return ResultRequest::exportResultAuthention($data[MESSAGE]);
-                            }else{
-                                return ResultRequest::exportResultFailed($data[MESSAGE]);
-                            }
+                            return ResultRequest::exportResultFailed(PERMISSION_INVALID,401);
                         }
+
                     }else{
-                        return ResultRequest::exportResultAuthention();
+                        if ($data[CATEGORY]==AUTHENTICATION){
+                            return ResultRequest::exportResultAuthention($data[MESSAGE]);
+                        }else{
+                            return ResultRequest::exportResultFailed($data[MESSAGE]);
+                        }
                     }
-                }
-                else{
-                    return ResultRequest::exportResultInternalServerError();
+                }else{
+                    return ResultRequest::exportResultAuthention();
                 }
             }else{
                 return ResultRequest::exportResultAuthention();
             }
 
-        }else{
-            return ResultRequest::exportResultAuthention();
         }
+        return ResultRequest::exportResultAuthention();
     }
 }

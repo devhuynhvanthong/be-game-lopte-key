@@ -3,6 +3,8 @@
 /**
  * field truyền lên mã hóa
  */
+
+const KEY_AES_MY_SERVICE = 'gamelopte_product_shared_aigoox';
 const AUTHORIZACATION = "YXV0aG9yaXphdGlvbg"; //authorization
 const CODE_MY_SERVICE = "YWNjb3VudA"; //account
 const TOKEN_SERVICE_RECEIVE = "dG9rZW5fc2VydmljZQ"; //token_service;
@@ -40,6 +42,7 @@ const PAGE_SIZE_DEFAULT = 10;
  * Service
  */
 
+const KEY_CACHE_SERVICE = "KEY_CACHE_SERVICE";
 const COMMAND_GET_KEY = "encryption.get_primary_key_encryption";
 const KEY_CACHE_PRIMARY_KEY_ENCRYPTION = "KEY_CACHE_PRIMARY_KEY_ENCRYPTION";
 ?>

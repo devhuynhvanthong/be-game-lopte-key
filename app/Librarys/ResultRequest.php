@@ -33,7 +33,7 @@ class ResultRequest
     static function exportResultAuthention($message = MESSAGE_AUTHENTICATION){
         return response()->json([
             STATUS => FAILED,
-            DATA => $message,
+            MESSAGE => $message,
             CATEGORY => AUTHENTICATION
         ],401);
     }
