@@ -10,12 +10,10 @@ const TABLE_CONFIG = 'configs';
 /**
  * VALUE
  */
-
 const VALUE_ACCOUNT_PRODUCT = "account_product";
 
 /**
  * PATH
  */
-
 const PATH_CHECK_EXPIRED_ACCESS_TOKEN = '/api/check_expired_session';
 ?>
