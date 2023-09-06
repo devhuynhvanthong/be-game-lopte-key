@@ -157,6 +157,13 @@ class KeyController extends Controller
                     if ($queryCheckUsed->count()>1){
                         return ResultRequest::exportResultFailed(KEY_OUT_TO_DAY);
                     }
+                    break;
+                case "FIVE_KEY_DAY":
+                case "FIVE_KEY_HOUR":
+                    if ($queryCheckUsed->count()>5){
+                        return ResultRequest::exportResultFailed(KEY_OUT_TO_DAY);
+                    }
+                    break;
             }
 
         }
