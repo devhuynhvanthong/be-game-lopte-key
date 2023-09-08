@@ -54,7 +54,7 @@ class KeyController extends Controller
             if($queryQueues->count()>0){
                 $queryQueues = $queryQueues->first();
                 $timeCreate = $queryQueues[FIELD_TIME_CREATE];
-                if(date(FORMAT_DATE_TIME,$time->subMinutes(5)->getTimestamp()) > $timeCreate){
+                if(date(FORMAT_DATE_TIME,$time->subMinutes(10)->getTimestamp()) > $timeCreate){
                     $queryInsertKey = Queues::where([
                         FIELD_ID => $queryQueues[FIELD_ID]
                     ])
