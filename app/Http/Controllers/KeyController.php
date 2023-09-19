@@ -208,7 +208,7 @@ class KeyController extends Controller
                     return ResultRequest::exportResultInternalServerError();
                 }
                 if ($queryCategory->count() <= 0) {
-                    return ResultRequest::exportResultFailed("The game doesn't exist");
+                    return ResultRequest::exportResultFailed(GAME_NOT_EXIST);
                 }
                 $queryKey = Keys::where([
                     FIELD_ID_CATEGORY => $queryCategory->value(FIELD_ID)
