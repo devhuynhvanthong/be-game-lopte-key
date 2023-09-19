@@ -24,14 +24,14 @@ class AuthenticationRequest extends Middleware
                 $tokenAuthen = str_replace(BEARER,"",$request->header(AUTHORIZATION));
 
                 $accessToken = $tokenAuthen;
-                // $cache = json_decode(Cache::get(KEY_CACHE_SERVICE),true);
+                 $cache = json_decode(Cache::get(KEY_CACHE_SERVICE),true);
 
-                // $cache = array_filter($cache, function ($item) {
-                //     return $item[FIELD_NAME] == VALUE_ACCOUNT_PRODUCT;
-                // })[0];
-                // $url_base_account = Encryptions_::decryptionAESMyData($cache[FIELD_END_POINT]);
-                // $url_base_account .= PATH_CHECK_EXPIRED_ACCESS_TOKEN;
-                $url_base_account = 'https://api-account.aigoox.com/api/check_expired_session';
+                 $cache = array_filter($cache, function ($item) {
+                     return $item[FIELD_NAME] == VALUE_ACCOUNT_PRODUCT;
+                 })[0];
+                 $url_base_account = Encryptions_::decryptionAESMyData($cache[FIELD_END_POINT]);
+                 $url_base_account .= PATH_CHECK_EXPIRED_ACCESS_TOKEN;
+//                $url_base_account = 'https://api-account.aigoox.com/api/check_expired_session';
                 $data = Librarys_::callApi($url_base_account,true,[],[
                     "Authorization: Bearer " . $accessToken
                 ]);

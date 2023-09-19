@@ -43,6 +43,6 @@ const PAGE_SIZE_DEFAULT = 10;
  */
 
 const KEY_CACHE_SERVICE = "KEY_CACHE_SERVICE";
-const COMMAND_GET_KEY = "encryption.get_primary_key_encryption";
+const COMMAND_RESET_QUEUES = "reset.queues";
 const KEY_CACHE_PRIMARY_KEY_ENCRYPTION = "KEY_CACHE_PRIMARY_KEY_ENCRYPTION";
 ?>

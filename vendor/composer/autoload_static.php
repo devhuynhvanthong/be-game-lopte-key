@@ -514,7 +514,7 @@ class ComposerStaticInitdcb5a18fa5c2b931fb4f42204ef29e71
     );
 
     public static $classMap = array (
-        'App\\Console\\Commands\\EncryptionPrimaryKey' => __DIR__ . '/../..' . '/app/Console/Commands/EncryptionPrimaryKey.php',
+        'App\\Console\\Commands\\ResetQueues' => __DIR__ . '/../..' . '/app/Console/Commands/ResetQueues.php',
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
         'App\\Http\\Controllers\\CacheController' => __DIR__ . '/../..' . '/app/Http/Controllers/CacheController.php',

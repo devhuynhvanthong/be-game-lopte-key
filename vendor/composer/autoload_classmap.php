@@ -6,7 +6,7 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'App\\Console\\Commands\\EncryptionPrimaryKey' => $baseDir . '/app/Console/Commands/EncryptionPrimaryKey.php',
+    'App\\Console\\Commands\\ResetQueues' => $baseDir . '/app/Console/Commands/ResetQueues.php',
     'App\\Console\\Kernel' => $baseDir . '/app/Console/Kernel.php',
     'App\\Exceptions\\Handler' => $baseDir . '/app/Exceptions/Handler.php',
     'App\\Http\\Controllers\\CacheController' => $baseDir . '/app/Http/Controllers/CacheController.php',
