@@ -23,5 +23,6 @@ const FIELD_INVALID = "Thông tin đầu vào không chính xác!";
 const OUT_OF_KEY = "Keys are out!";
 const KEY_OUT_TO_DAY = "Keys are over for today!";
 const GAME_NOT_EXIST = "The game doesn't exist";
+const AN_ERROR_OCCURRED_TRY_AGAIN = "An error occurred, please try again";
 const SET_CACHE_DEFAULT_SUCCESS = 'Set cache default successfully!';
 ?>
