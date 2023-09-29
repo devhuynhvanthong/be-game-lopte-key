@@ -110,7 +110,7 @@ class KeyController extends Controller
         }
         $network = $request->ip();
         $device = $request->header('User-Agent');
-        $ip = strtolower(str_replace(" ","",$device)).'.'.$network;
+        $ip = strtolower(str_replace(" ", "", $device)) . '.' . $network;
         $queryCategory = Category::where([
             FIELD_CODE => $category
         ])->get()->first();
@@ -169,76 +169,44 @@ class KeyController extends Controller
             }
 
         }
+        Queues::where([
+            FIELD_IP => $ip
+        ])->delete();
 
-        $queryQueues = Queues::with('key:id,code')
-            ->where([
-                FIELD_IP => $ip,
-            ])->get();
-
-        if ($queryQueues) {
-            if ($queryQueues->count() > 0) {
-                $queryUpdateTime = Queues::where([
-                    FIELD_ID => $queryQueues->value(FIELD_ID)
-                ])
-                    ->update([
-                        FIELD_TIME_CREATE => Librarys_::getDateTime()
-                    ]);
-
-                if ($queryUpdateTime) {
-                    $queryVerify = Queues::with('key:id,alias_code')
-                        ->where([
-                            FIELD_ID => $queryQueues->first()[FIELD_ID]
-                        ])->get()->first();
-                    if ($queryVerify) {
-                        return ResultRequest::exportResultSuccess([
-                            FIELD_CODE => $queryVerify->key->alias_code
-                        ], VALIDATE, 201);
-                    } else {
-                        return ResultRequest::exportResultFailed(VERIFY_KEY_FAILD);
-                    }
-
-                } else {
-                    return ResultRequest::exportResultInternalServerError();
-                }
-            } else {
-                $queryCategory = Category::where([
-                    FIELD_CODE => $category
+        $queryCategory = Category::where([
+            FIELD_CODE => $category
+        ])->get();
+        if (!$queryCategory) {
+            return ResultRequest::exportResultInternalServerError();
+        }
+        if ($queryCategory->count() <= 0) {
+            return ResultRequest::exportResultFailed(GAME_NOT_EXIST);
+        }
+        $queryKey = Keys::where([
+            FIELD_ID_CATEGORY => $queryCategory->value(FIELD_ID)
+        ])->get();
+        if ($queryKey) {
+            if ($queryKey->count() <= 0) {
+                return ResultRequest::exportResultFailed(OUT_OF_KEY);
+            }
+            foreach ($queryKey as $item) {
+                $queryQueExist = Queues::where([
+                    FIELD_ID_KEY => $item->id
                 ])->get();
-                if (!$queryCategory) {
-                    return ResultRequest::exportResultInternalServerError();
-                }
-                if ($queryCategory->count() <= 0) {
-                    return ResultRequest::exportResultFailed(GAME_NOT_EXIST);
-                }
-                $queryKey = Keys::where([
-                    FIELD_ID_CATEGORY => $queryCategory->value(FIELD_ID)
-                ])->get();
-                if ($queryKey) {
-                    if ($queryKey->count() <= 0) {
-                        return ResultRequest::exportResultFailed(OUT_OF_KEY);
-                    }
-                    foreach ($queryKey as $item) {
-                        $queryQueExist = Queues::where([
-                            FIELD_ID_KEY => $item->id
-                        ])->get();
-                        if ($queryQueExist) {
-                            if ($queryQueExist->count() <= 0) {
-                                $queryVerify = Queues::insert([
-                                    FIELD_IP => $ip,
-                                    FIELD_ID_KEY => $item->id,
-                                    FIELD_TIME_CREATE => Librarys_::getDateTime()
-                                ]);
-                                if ($queryVerify) {
+                if ($queryQueExist) {
+                    if ($queryQueExist->count() <= 0) {
+                        $queryVerify = Queues::insert([
+                            FIELD_IP => $ip,
+                            FIELD_ID_KEY => $item->id,
+                            FIELD_TIME_CREATE => Librarys_::getDateTime()
+                        ]);
+                        if ($queryVerify) {
 
-                                    return ResultRequest::exportResultSuccess([
-                                        FIELD_CODE => $item->alias_code
-                                    ], VALIDATE, 201);
-                                } else {
-                                    return ResultRequest::exportResultFailed(VERIFY_KEY_FAILD);
-                                }
-                            }
+                            return ResultRequest::exportResultSuccess([
+                                FIELD_CODE => $item->alias_code
+                            ], VALIDATE, 201);
                         } else {
-                            return ResultRequest::exportResultInternalServerError();
+                            return ResultRequest::exportResultFailed(VERIFY_KEY_FAILD);
                         }
                     }
                 } else {
