@@ -90,9 +90,8 @@ class KeyController extends Controller
             } else {
                 return ResultRequest::exportResultFailed(PERMISSION_DEVICE_FAILED);
             }
-        } else {
-            return ResultRequest::exportResultInternalServerError();
         }
+        return ResultRequest::exportResultInternalServerError();
     }
 
     public function verifyKey(Request $request)
@@ -110,7 +109,8 @@ class KeyController extends Controller
             return ResultRequest::exportResultAuthention();
         }
         $network = $request->ip();
-        $ip = $mac . "." . $network;
+        $device = $request->header('User-Agent');
+        $ip = strtolower(str_replace(" ","",$device)).'.'.$network;
         $queryCategory = Category::where([
             FIELD_CODE => $category
         ])->get()->first();
