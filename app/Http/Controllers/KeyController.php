@@ -2,21 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Librarys\Librarys_;
 use App\Librarys\ResultRequest;
 use App\Models\Category;
-use App\Models\ConfigVisit;
 use App\Models\Configs;
+use App\Models\ConfigVisit;
 use App\Models\Keys;
 use App\Models\Queues;
 use App\Models\Used;
 use Carbon\Carbon;
 use DateInterval;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Nette\Utils\DateTime;
-use Termwind\Components\Li;
 
 class KeyController extends Controller
 {
@@ -34,7 +31,8 @@ class KeyController extends Controller
             return ResultRequest::exportResultAuthention();
         }
         $network = $request->ip();
-        $ip = $mac . "." . $network;
+        $device = $request->header('User-Agent');
+        $ip = strtolower(str_replace(" ", "", $device)) . '.' . $network;
         $code = $request->input(FIELD_CODE);
         $time = Carbon::parse(Librarys_::getDateTime());
         $checkCode = Keys::with('category:id,code,name')
