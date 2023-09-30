@@ -34,7 +34,8 @@ class KeyController extends Controller
             return ResultRequest::exportResultAuthention();
         }
         $network = $request->ip();
-        $ip = $mac . "." . $network;
+        $device = $request->header('User-Agent');
+        $ip = strtolower(str_replace(" ", "", $device)) . '.' . $network;
         $code = $request->input(FIELD_CODE);
         $time = Carbon::parse(Librarys_::getDateTime());
         $checkCode = Keys::with('category:id,code,name')
