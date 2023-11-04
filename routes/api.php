@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\CacheController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ConfigController;
@@ -17,11 +18,14 @@ Route::middleware("basic")->group(function (){
     Route::post("verify_key",[KeyController::class,"verifyKey"]);
     Route::get('get_category',[CategoryController::class,"getCategory"]);
     Route::get('get_config',[ConfigController::class,'getConfig']);
-    Route::post("set_default_cache", [CacheController::class, "setDefaultCache"]);
+    Route::post("register", [AccountController::class, "add"]);
+    Route::post("login", [AccountController::class, "login"]);
 });
 Route::middleware('advanced')->group(function (){
     Route::post('add_key',[KeyController::class,'addKey']);
+    Route::get('account',[AccountController::class,'get']);
     Route::get('get_all_key',[KeyController::class,'getKeys']);
+    Route::post('logout',[AccountController::class,'logout']);
     Route::get('get_all_key_queues',[KeyController::class,'getKeysQueues']);
     Route::get('get_all_key_used',[KeyController::class,'getKeysUsed']);
     Route::post('remove_key',[KeyController::class,'removeKey']);
