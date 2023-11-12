@@ -12,7 +12,8 @@ use Psy\Readline\Hoa\Exception;
 
 class AccountController extends Controller
 {
-    static public function add(Request $request) {
+    static public function add(Request $request)
+    {
         $request->validate([
             FIELD_PASSWORD => REQUIRED,
             FIELD_USERNAME => REQUIRED
@@ -32,7 +33,7 @@ class AccountController extends Controller
             FIELD_USERNAME => $username,
             FIELD_PASSWORD => base64_encode(Encryptions_::hash256($password))
         ]);
-        if(!$query) {
+        if (!$query) {
             return ResultRequest::exportResultFailed(ADD_DATA_FAILED);
         }
         return ResultRequest::exportResultSuccess([
@@ -40,7 +41,8 @@ class AccountController extends Controller
         ]);
     }
 
-    static public function login(Request $request) {
+    static public function login(Request $request)
+    {
         $request->validate([
             FIELD_PASSWORD => REQUIRED,
             FIELD_USERNAME => REQUIRED
@@ -67,7 +69,7 @@ class AccountController extends Controller
             FIELD_ID_ACCOUNT => $query[FIELD_ID],
             FIELD_TOKEN => $token
         ]);
-        if(!$query) {
+        if (!$query) {
             return ResultRequest::exportResultInternalServerError();
         }
         return ResultRequest::exportResultSuccess([
@@ -75,7 +77,32 @@ class AccountController extends Controller
         ]);
     }
 
-    static public function get() {
+    static public function update(Request $request)
+    {
+        $request->validate([
+            FIELD_PASSWORD => REQUIRED,
+            FIELD_USERNAME => REQUIRED
+        ]);
+
+        $username = $request->input(FIELD_USERNAME);
+        $password = $request->input(FIELD_PASSWORD);
+
+        $query = Account::where([
+            FIELD_USERNAME => $username
+        ])->update([
+            FIELD_PASSWORD => base64_encode(Encryptions_::hash256($password))
+        ]);
+
+        if (!$query) {
+            return ResultRequest::exportResultInternalServerError();
+        }
+        return ResultRequest::exportResultSuccess([
+            MESSAGE => UPDATE_DATA_SUCCESS
+        ]);
+    }
+
+    static public function get()
+    {
 
         $query = Account::get();
         if (!$query) {
@@ -85,7 +112,7 @@ class AccountController extends Controller
         foreach ($query as $item) {
             $data[] = [
                 FIELD_ID => $item[FIELD_ID],
-                FIELD_USERNAME => $item[FIELD_USERNAME]
+                FIELD_USERNAME => $item[FIELD_USERNAME],
             ];
         }
         return ResultRequest::exportResultSuccess([
@@ -93,7 +120,8 @@ class AccountController extends Controller
         ]);
     }
 
-    static public function logout(Request $request) {
+    static public function logout(Request $request)
+    {
 
         $token = $request->input(FIELD_TOKEN);
         $query = Session::where([

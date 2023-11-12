@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\AccountController;
-use App\Http\Controllers\CacheController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ConfigController;
 use App\Http\Controllers\KeyController;
@@ -23,6 +22,7 @@ Route::middleware("basic")->group(function (){
 });
 Route::middleware('advanced')->group(function (){
     Route::post('add_key',[KeyController::class,'addKey']);
+    Route::put('update_password',[AccountController::class,'update']);
     Route::get('account',[AccountController::class,'get']);
     Route::get('get_all_key',[KeyController::class,'getKeys']);
     Route::post('logout',[AccountController::class,'logout']);
