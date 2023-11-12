@@ -14,16 +14,8 @@ class Librarys_{
         return date(FORMAT_DATE_TIME, time());
     }
 
-    public static function getDateTimeStartDay(){
-        return self::getDate()." 00:00:01";
-    }
-
     public static function getCode(){
         return sha1(self::getDateTime());
-    }
-
-    public static function createDateTime($time){
-        return date(FORMAT_DATE_TIME, $time);
     }
 
     public static function getDate(){
@@ -50,71 +42,5 @@ class Librarys_{
         curl_close($init);
         return json_decode($query,true);
     }
-
-    public static function callApiKeys($url,$code_service){
-        $url_ = $url."/api/primary_key_encryption";
-        $init = curl_init();
-        $header = [
-            "Content-Type: application/json"
-        ];
-        curl_setopt($init,CURLOPT_URL,$url_);
-        curl_setopt($init,CURLOPT_POST,true);
-        curl_setopt($init, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($init,CURLOPT_HTTPHEADER,$header);
-        curl_setopt($init,CURLOPT_POSTFIELDS,json_encode([
-            CODE_SERVICE => $code_service
-        ]));
-        $query = curl_exec($init);
-        curl_close($init);
-        $data = json_decode($query,true);
-        if ($data!=null){
-            if ($data[STATUS]==SUCCESS){
-                return $data;
-            }else{
-                return null;
-            }
-        }else{
-            return null;
-        }
-    }
-
-    public static function getMyServicecCode(){
-        $cache = json_decode(Cache::get(KEY_CACHE_PRIMARY_KEY_ENCRYPTION),true);
-        if ($cache!=null){
-            if ($cache[FIELD_MY_SERVICE]!=null){
-                return $cache[FIELD_MY_SERVICE];
-            }else{
-                return Services::where([
-                    FIELD_NAME =>FIELD_MY_SERVICE
-                ])->get()->value(FIELD_CODE);
-            }
-        }else{
-            return Services::where([
-                FIELD_NAME =>FIELD_MY_SERVICE
-            ])->get()->value(FIELD_CODE);
-        }
-    }
-
-    //public static function getServiceCode($url=null,$name=null){
-    //    $cache = Cache::get(KEY_CACHE_PRIMARY_KEY_ENCRYPTION);
-    //    if ($cache!=null){
-    //        $codeService = null;
-    //        foreach ($cache as $cache_){
-    //            if ($cache_[fi])
-    //        }
-    //    }else{
-    //        if ($url!=null){
-    //            $queryService = Queues::where([
-    //                FIELD_END_POINT =>$url
-    //            ])->get();
-    //            return $queryService->value(FIELD_CODE);
-    //        }else{
-    //            $queryService = Queues::where([
-    //                FIELD_NAME =>$name
-    //            ])->get();
-    //            return $queryService->value(FIELD_CODE);
-    //        }
-    //    }
-    //}
 }
 ?>

@@ -11,31 +11,6 @@ use UnexpectedValueException;
  */
 class Encryptions_{
 
-    static public function encryptionAESMyData($plaintext, $key = KEY_AES_MY_SERVICE) {
-        if ($plaintext == null) {
-            return null;
-        }
-        $hash = self::hash256($key);
-        $key = substr($hash,0,16);
-        $iv = substr($hash,16,16);
-        if (gettype($plaintext) != 'string') {
-            $plaintext = base64_encode(json_encode($plaintext));
-        }
-        $ciphertext = openssl_encrypt($plaintext, 'aes-256-cbc', $key, OPENSSL_RAW_DATA, $iv);
-        return base64_encode($ciphertext);
-    }
-    static public function decryptionAESMyData($ciphertext, $key = KEY_AES_MY_SERVICE) {
-        if ($ciphertext == null) {
-            return null;
-        }
-        $hash = self::hash256($key);
-        $key = substr($hash,0,16);
-        $iv = substr($hash,16,16);
-        $ciphertext = base64_decode($ciphertext);
-        // Giải mã với AES CBC
-        return openssl_decrypt($ciphertext, 'aes-256-cbc', $key, OPENSSL_RAW_DATA, $iv);
-    }
-
     public static function hash256($text): string
     {
         return hash("sha256",$text);
@@ -129,7 +104,6 @@ class Encryptions_{
     {
         return str_replace('=', '', strtr(base64_encode($input), '+/', '-_'));
     }
-
 }
 
 ?>
